@@ -1,0 +1,694 @@
+@font-face {
+  font-family: "Athiti";
+  src: url("/fonts/Athiti-Regular.ttf");
+}
+@font-face {
+  font-family: "Great Vibes";
+  src: url("/fonts/GreatVibes-Regular.ttf");
+}
+
+:root {
+  --bg: #FFFAFA;
+  --logoName: #884A39;
+  --bgMainMenu: #9BCDD2; 
+  --btnOk: #9BCDD2;
+  --btnCancel: #FEA1A1;
+  --btnHover: #FF8551;
+
+  --h_menu : 420;
+
+}
+
+body {
+	line-height: 1;
+  font-family: 'Athiti', sans-serif;
+  font-size: 1rem;
+  background: var(--bg);
+  height : 100vh;
+  width : 100%;
+}
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+      -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+}
+
+  /*======================= Login ========================================*/
+  .logoname {
+  font-family: 'Great Vibes', cursive;
+  font-size: 2.3rem;
+  font-weight: bold;
+  color: var(--logoName);
+  text-align: center;
+  letter-spacing: 4px;
+  text-shadow: 2px 7px 5px rgba(0,0,0,0.3), 
+    0px -4px 10px rgba(255,255,255,0.3);
+}
+  .form-signin {
+    font-family: 'Athiti', sans-serif;
+    font-size: 1rem;
+    width: 250px;
+    margin: auto;
+    text-align: center;
+  }
+  .form-signin .user_input_signin {
+    margin-bottom: -1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+  .form-signin .user_input_reg {
+    margin-bottom: 12px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+  .form-signin input[type="password"] {
+    margin-bottom: -1px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
+  .form-signin button{
+    width: 100%;
+    height: 46px;
+    border-radius:23px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    color : #fff;
+    background: var(--btnOk);;
+    border : none;
+    transition: 0.3s;
+  }
+  .form-signin button:hover{
+    color:#fff;    
+    background: var(--btnHover);;
+    outline: 3px solid #ddd;
+  }
+  .glow {
+    font-size: 1.8rem;
+    font-weight:bold;
+    color: #566573;
+    text-shadow: 
+      1px 0px 1px #ccc, 0px 1px 1px #eee, 
+      2px 1px 1px #ccc, 1px 2px 1px #eee,
+      3px 2px 1px #ccc, 2px 3px 1px #eee,
+      4px 3px 1px #ccc, 3px 4px 1px #eee,
+      5px 4px 1px #ccc, 4px 5px 1px #eee; /*,
+      6px 5px 1px #ccc, 5px 6px 1px #eee,
+      7px 6px 1px #ccc;*/
+  }
+  
+.mybtn{  
+  width: 90px;
+  height: 40px;
+  border : none;
+  padding : 8px;
+  margin : 0 10px;
+  border-radius : 20px;
+  transition: 0.3s;
+}
+.btnLine{
+  color :#884A39;
+  background: #ADE792;
+}
+.btnLine:hover{
+  color:#ffffff;
+  background: var(--btnHover);
+  outline: 3px solid #ddd;
+}
+
+.btnOk{
+  color :#ffffff;
+  background: var(--btnOk);
+}
+.btnOk:hover{
+  color:#ffffff;
+  background: var(--btnHover);
+  outline: 3px solid #ddd;
+}
+
+.btnCan{
+  color :#ffffff;
+  background: var(--btnCancel);
+}
+.btnCan:hover{
+  color:#ffffff;
+  background: var(--btnHover);
+  outline: 3px solid #ddd;
+}
+
+/*==================== Side Menu ==================*/
+.collapsible {
+  background-color: rgba(255, 255, 255, 0);
+  color: #ffffff;
+  cursor: pointer;
+  padding: 15px 15px 15px 40px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 1rem;
+  transition: 0.3s
+}
+
+.active, .collapsible:hover {
+  background-color: var(--btnCancel);
+}
+
+.collapsible:after {
+  content: '\25bc'; 
+  color: #ffffff;
+  font-weight: bold;
+  float: right;
+  margin-left: 5px;
+}
+
+.active:after {
+  content: "\25b2"; 
+}
+
+.content {
+  padding: 0 18px;
+  max-height: 0;
+  overflow: hidden;  
+  transition: 0.6s;
+  background-color: rgba(255, 255, 255, 0);
+}
+
+.my_menu{    
+    text-align: left;
+    padding: 15px 15px 15px 40px;
+    width: 100%;
+    height: 40px;
+    border: none;
+    background: none;
+    font-size: 1rem;
+    color: #ffffff;    
+    transition: 0.3s
+  }
+  .my_menu:hover, .my_exit:hover, .my_menu:focus, .closebtn_x:hover{
+    color: var(--btnHover);
+  }
+
+  .my_exit{
+    font-size: 1.5rem;
+    color: #ffffff;  
+    width: 100%;
+    height: 40px;
+    border: none;
+    background: none;      
+    transition: 0.3s;   
+    /*position:absolute; 
+    top:560px; 
+    left:0px;*/
+    
+  }
+
+  .u_name{
+    font-size: 1.1rem;
+    color: #ffffff;
+    width: 100%;
+    text-align: left; 
+    padding-left:26px;
+  }
+  .u_name #avatar{
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 3px solid #f0f0f0;
+    /*box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);*/
+    
+  }
+  .u_name #username{
+    position:absolute; 
+    top:7px;
+    margin-left: 5px;
+  }
+  .u_name #user_job{
+    position:absolute; 
+    font-size: 0.8rem;
+    top:32px;
+    margin-left: 5px;
+  }
+  .u_name #ch_key{
+    position:absolute;     
+    top:40px;
+    right: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  .u_name #ch_key:hover{
+    color: var(--btnHover);
+  }
+
+  .closebtn_x {
+  color: #d0d3d4;
+  position: absolute;
+  top: 10px;
+  right: 30px;
+  font-size: 20px;
+}
+
+.overlay {
+  height: 420px;
+  width: 0;
+  position: absolute; /*fixed;*/
+  z-index: 999;
+  top: 55px;
+  left: 0px; 
+  background: var(--bgMainMenu);
+  background: linear-gradient(90deg, #b9dcdf 0%, var(--bgMainMenu) 20%,#61b1b8 100%);
+  border-radius : 0 10px 10px 0;
+  box-shadow: rgba(30, 17, 17, 0.25) 0px 4px 16px, rgba(30, 17, 17, 0.2) 0px 8px 24px, rgba(30, 17, 17, 0.1) 0px 16px 56px;
+  /*border : solid 2px rgba(255,255,255,0.85);
+  outline: 4px solid #c0c0c0; */
+  overflow-x: hidden;
+  transition: 0.5s;
+}
+
+.overlay-content {
+  position: relative;
+  top: 20px;
+  width: 100%;
+  text-align: center;
+}
+/*
+@media screen and (max-height: 450px) {
+  .overlay .my_menu {font-size: 22px}
+  .overlay .closebtn_x {
+  font-size: 40px;
+  top: 15px;
+  right: 35px;
+  }
+}*/
+
+/*====================== myWaiting ==========================*/
+.myWaiting{  
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index:200;
+  width:100%; 
+  height: 100%; 
+  background-color: #ffffff;
+  background-color: rgba(255,255,255,0.80);
+}
+.myWaiting .spinner{
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  /* bring your own prefixes */
+  transform: translate(-50%, -50%);
+
+}
+
+/*====================== Burger Icon =======================*/
+.burger {
+  display: inline-block;
+  cursor: pointer;
+}
+
+.bar1, .bar2, .bar3 {
+  width: 35px;
+  height: 5px;
+  background-color: #999999;
+  margin: 6px 0;
+  transition: 0.4s;
+}
+
+.change .bar1 {
+  transform: translate(0, 11px) rotate(-45deg);
+}
+
+.change .bar2 {opacity: 0;}
+
+.change .bar3 {
+  transform: translate(0, -11px) rotate(45deg);
+}
+
+/*==================== Head Title ==========================*/
+.headbar{
+  display:inline-table;
+  /*background: rgb(255,255,255);
+  background: linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0.9) 70%, rgba(255,255,255,0.5) 100%); */
+}
+@keyframes animate8345 {
+  0%,100% {
+    filter: hue-rotate(0deg);
+  }
+
+  50% {
+    filter: hue-rotate(360deg);
+  }
+}
+
+.loader {
+  font-family: 'Great Vibes', cursive;
+  font-size: 1.8rem;
+  font-weight: bold;
+  position : absolute;
+  cursor:pointer;
+  top: 16px;  
+  color: #884A39;
+  /*text-align: center;*/
+  letter-spacing: 4px;
+  text-shadow: 2px 7px 5px rgba(0,0,0,0.3), 
+    0px -4px 10px rgba(255,255,255,0.3);
+}
+#fn_name{
+  color: #884A39;
+  font-size: 1.1rem;
+  font-weight: bold;
+  padding:10px 25px 5px 15px;
+  margin-bottom: 5px;
+  border: 3px solid #ffffff;
+  outline: 1px solid #c0c0c0;
+  border-radius : 20px 20px 0 0; 
+  /*display: block;
+    text-align: center;*/
+}
+
+.b-success{
+  color: #ffffff;
+  border: none;
+  background-color: var(--btnOk); 
+  width: 40px; 
+  transition: 0.3s;
+}
+
+.b-add{
+  color: #ffffff;
+  background-color: #A4D0A4;  
+  border: none;
+  width: 40px;
+  transition: 0.3s;
+}
+
+.b-back{
+  color: #ffffff;
+  background-color: var(--btnCancel);  
+  border: none;
+  width: 40px;
+  transition: 0.3s;
+}
+
+.b-success:hover, .b-add:hover, .b-back:hover{
+ color: #884A39;
+}
+
+/*========= เมนูย่อย =============================*/
+#minimenu{
+  color: #f0f0f0;
+  background-color: rgba(30,80,150,.9);
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.6), 0 6px 20px 0 rgba(0, 0, 0, 0.2);
+  padding: 20px 0;
+  border-radius : 30px 0 30px 30px; 
+  transition: 0.3s
+
+}
+ul>li{
+  height:40px;
+}
+
+ul > li:hover {
+    background-color:  rgba(160,160,200,0.4);
+    cursor:pointer;
+  }
+
+.minibtn{
+  color:#f0f0f0;
+  border:none; 
+  background-color: rgba(0,0,0,0); 
+  height:40px;
+  padding : 10px;
+  text-align:left;
+}
+ul>li>i{
+  padding-top:12px;
+  padding-left:20px;
+  padding-right:15px;
+}
+
+/*============= Edit and Add forms =============*/
+#node_edit, #node_add, #pass_change{
+  width:300px; 
+  margin:20px auto;
+  color: #101010; 
+background: rgb(230,240,250);
+background: linear-gradient(90deg, rgba(230,240,250,0.75) 0%, rgba(250,250,255,0.95) 50%, rgba(230,240,250,0.75) 100%);
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.6), 0 6px 20px 0 rgba(0, 0, 0, 0.2); 
+  border-radius : 10px; 
+}
+
+#user_add,#user_edit,#branch_add,#branch_edit,#point_add{
+  /*width:300px; */
+  margin:20px auto;
+  color: #101010; 
+  background: rgb(230,240,250);
+  background: linear-gradient(90deg, rgba(230,240,250,0.75) 0%, rgba(250,250,255,0.95) 50%, rgba(230,240,250,0.75) 100%);
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.6), 0 6px 20px 0 rgba(0, 0, 0, 0.2); 
+  border-radius : 10px; 
+}
+
+#line_qrcode{
+  display: none;
+  position: absolute;
+  z-index: 99;
+  top: 50%;
+  left: 50%;
+  width: 18rem; 
+  text-align: center;
+  /* bring your own prefixes */
+  transform: translate(-50%, -50%);
+}
+
+#main_changepass{
+  display: none;
+  position: absolute;
+  z-index: 99;
+  top: 50%;
+  left: 50%;
+  /* bring your own prefixes */
+  transform: translate(-50%, -50%);
+
+  width:300px; 
+  color: #101010; 
+  background: rgb(230,240,250);
+  background: linear-gradient(90deg, rgba(230,240,250,1) 0%, rgba(250,250,255,1) 50%, rgba(230,240,250,1) 100%);
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.6), 0 6px 20px 0 rgba(0, 0, 0, 0.2); 
+  border-radius : 10px; 
+}
+
+.input-group-text{
+color:var(--logoName);
+}
+
+/*============ Loading ================*/
+.spinner {
+ flex-direction: row;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+}
+
+.dot1, .dot2, .dot3 {
+ width: 15px;
+ height: 15px;
+ border: double;
+ border-color: white;
+ border-radius: 50%;
+ margin: 10px;
+}
+
+.dot1 {
+ animation: jump765 1.6s -0.32s linear infinite;
+ background: #FEA1A1;
+}
+
+.dot2 {
+ animation: jump765 1.6s -0.16s linear infinite;
+ background: #FEA1A1;
+}
+
+.dot3 {
+ animation: jump765 1.6s linear infinite;
+ background: #FEA1A1;
+}
+
+@keyframes jump765 {
+ 0%, 80%, 100% {
+  -webkit-transform: scale(0);
+  transform: scale(0);
+ }
+
+ 40% {
+  -webkit-transform: scale(2.0);
+  transform: scale(2.0);
+ }
+}
+
+
+ /*==================================== table =====================================*/
+.list-table{
+  background-color: rgba(255, 255, 255, 1);
+  box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.3), 0 4px 15px 0 rgba(0, 0, 0, 0.1);   
+  /*border-radius : 0 0 15px 15px; */
+}
+
+.list-table th{
+  font-size: 0.8rem; 
+  font-weight: 600;
+  color:black; 
+  border:none;
+}
+
+.list-table td{
+  font-size: 0.8rem; 
+  font-weight: 400;
+  color:black; 
+  border:none; 
+}
+
+.list-table tr{
+  height: 30px;
+}
+
+.list-table tr:nth-child(even) {background-color:#FAF0E4;}
+#usertable tr:nth-child(even) {background-color:#FAF0E4;}
+#branchtable tr:nth-child(even) {background-color:#F2FFDF;}
+
+.t_data{
+  color:#2059df;
+}
+
+#rowShow{
+  font-size: 0.8rem;
+  border: 1px solid #c0c0c0;
+}
+
+/*====== End table */
+
+/*======================================= Pagination =======================================*/
+
+.pagination a{
+color: #884A39;
+font-size: 12px; 
+/*float: left;*/
+padding: 7px 9px;
+text-decoration: none;
+transition: background-color .3s;
+background-color: #ECCDB4;
+margin: 0 2px;
+}
+
+.pagination a.active {
+background-color:var(--bgMainMenu);;
+color: #ffffff;
+border: 1px solid #ffffff;
+content: none;
+}
+
+.pagination a:hover:not(.active) {
+  color: #ffffff;
+background-color:var(--btnHover);
+}
+/*====== End Pagination */
+
+/*================= QR-Code =======================*/
+.conqrcode{
+    position: relative;
+    width: 358px;
+    height: 100%;
+    padding: 40px;
+    background: #fff;
+    border-radius: 8px;
+    flex-direction: row;
+    top:15px;
+
+}
+.conqrcode p{
+  font-size: 1.8rem;
+  font-weight: bold;
+  width: 100%;
+  text-align:center;
+  padding-bottom: 16px;
+
+}
+.conqrcode .qrCodeBx{
+    width: 260px;
+    height: 260px;
+    margin: 10px 0;
+    border: 2px solid #008cff;
+    position: relative;
+    border-radius: 8px;
+    /*padding-left: 10px; */
+    left :10px;
+    
+}
+.conqrcode .qrCodeBx img{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+}
+.conqrcode #cancel_qrcode{
+    width: 100%;
+    height: 50px;
+    background: #008cff;
+    border-radius: 50px;
+    color: #fff;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 40px;
+}
+.conqrcode #cancel_qrcode:active{
+    transform: scale(0.98);
+}
+
+.cam{
+    position: absolute;
+	  width: fit-content;
+    padding:6px;
+  	border: 3px solid #909090; 
+    border-radius: 50%;
+  	color:#909090;
+    background-color:#fff;
+    text-align: center;
+    top:0px;
+    right:50px;
+    cursor:pointer;
+    transition : 0.3s;
+  }
+
+  .cam:hover{
+    color : #a07050;
+  }
+
+  .camera{
+    position: absolute;
+    font-size : 1.1rem;
+    color : #606060;
+    border : 3px solid #606060;
+    border-radius : 50%;
+    width : 34px;
+    height : 34px;
+    text-align : center;
+    transition : 0.3s;
+    cursor : pointer;
+    z-index : 10;
+    left: 70%;
+    bottom: 0px;
+  }
+  .camera i{
+    position : absolute;
+    left:5px;
+    top:5px;
+  }
+  .camera:hover{
+    color : #a07050;
+    border : 3px solid #a07050;        
+  }

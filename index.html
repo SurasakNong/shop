@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Program</title>
+    <!-- Bootstrap CSS  -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap-icons.css" rel="stylesheet">
+    <!-- Font Awesome CSS -->
+    <link href="css/fontawesome.css" rel="stylesheet">
+    <!-- Animate CSS -->
+    <link href="css/animate.css" rel="stylesheet">
+    <!-- Sweetalert2 -->
+    <link href="css/sweetalert2.min.css" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,400;0,500;1,400&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="css/my_css/main_style.css">
+
+    <script src="js/my_js/constance.js"></script>
+    <script>
+       var u_reg = _get('mode'); //http://192.168.50.14:8092/iam/index.html?mode=221523126391103902
+        var ts = "";
+        var ts_code = "";
+        var ts_ok = 0;
+
+        var user = {
+            id: 0,
+            uname: 'Unknow',
+            name: 'Unknow',
+            job: 'Unknow',
+            branch: 'Unknow',
+            email: '',
+            tel: '',
+            pic: '',
+            lv: ''
+        }
+
+        var branch = {
+            id: 0,
+            name: 'Unknow',
+            bname: 'Unknow',
+            add: '',
+            tel: '',
+            email: '',
+            tax: '',
+            logo: '',
+            qr: '',
+            line: ''
+        }
+        /*
+        var pic_noAvatar = 'https://drive.google.com/uc?id=1bMFNL_mg45ZJUujtDJcgH81HIy1kAuII';
+        var pic_noLogo = 'https://drive.google.com/uc?id=1gbQhWs4jqdx4-k-WUYQlI4KJ4nL389Rx';
+        var pic_noQrcode = 'https://drive.google.com/uc?id=1KDWpq6X2vHQWTDoHemo3f2EVWrbxlwKT';
+
+        var url_login = 'https://dmdz3tlemugsqxylrx9ysg.on.drv.tw/00-my_web/siam/index.html'; */
+        //var url_login ='https://script.google.com/macros/s/AKfycbwIaOiQ74X0V3SRVfs7dNxsl-7AkubeUWK1W91ifLnS3zP4srKVKaHwxFnAN4p6LBRS/exec';   
+        var openMenu = false;
+
+        var rowperpage = 14; //=== จำนวนแถวที่แสดงข้อมูลต่อหน้า
+        var page_selected = 1; //=== หน้าที่เลือก
+        var h_menu = (getComputedStyle(document.querySelector(':root')).getPropertyValue('--h_menu')) * 1; //ดึงค่าความสูงเมนูจาก CSS
+
+
+    </script>
+</head>
+
+<body>
+    <div class="myWaiting">
+        <div class="spinner">
+            <div class="dot1"></div>
+            <div class="dot2"></div>
+            <div class="dot3"></div>
+        </div>
+    </div>
+
+    <div class="card animate__animated animate__fadeIn" id="line_qrcode"></div>
+    <div class="animate__animated animate__fadeIn" id="main_changepass"></div>
+
+    <section id="loginpage" style="padding-top:50px;"></section>
+
+    <section id="mainpage">
+        <div class="headbar pt-2">
+            <div style="display:table-cell;">
+                <div class="burger ps-3" onclick="ck_open()" title="MENU">
+                    <div class="bar1"></div>
+                    <div class="bar2"></div>
+                    <div class="bar3"></div>
+                </div>
+            </div>
+            <div style="display:table-cell; width:100%;">
+                <div class="loader ps-4 animate__animated animate__bounce noselect" id="titleName">Name</div>
+            </div>
+        </div>
+
+        <div id="myNav" class="overlay">
+            <div class="overlay-content">
+                <div class="u_name">
+                    <img id="avatar" src=""
+                        alt="Avatar"> &nbsp;
+                    <label id="username"></label>
+                    <label id="user_job"></label>
+                    <i id="ch_key" class="fa-solid fa-key fa-xs" title="เปลี่ยนรหัสผ่าน"></i>
+                </div>
+                <div style="border:1px solid #ffffff; width:85%; margin: 10px auto 10px auto;"></div>
+                <button class="my_menu"><i class="fa-solid fa-users fa-lg"></i> &nbsp;ลูกค้า</button>
+                <button class="my_menu"><i class="fa-regular fa-calendar-days fa-lg"></i> &nbsp;นัดหมาย</button>
+                <button class="my_menu" id="user_mng"><i class="fa-solid fa-user fa-lg"></i> &nbsp;พนักงาน</button>
+                <button class="my_menu"><i class="fa-solid fa-chart-pie fa-lg"></i> &nbsp;แดชบอร์ด</button>
+                <button class="my_menu"><i class="fa-solid fa-paste fa-lg"></i> &nbsp;รายงาน</button>
+                <button class="collapsible"><i class="fa-solid fa-gear fa-lg"></i> &nbsp;ตั้งค่าระบบ</button>
+                <div class="content" id="menuContent1">
+                    <button class="my_menu" id="branch_mng">&nbsp;&nbsp;<i class="fa-solid fa-house fa-lg"></i>
+                        &nbsp;สาขา</button>
+                    <button class="my_menu" id="point_mng">&nbsp;&nbsp;<i class="fa-solid fa-location-dot fa-lg"></i>
+                        &nbsp;จุดบริการ</button>
+                    <button class="my_menu">&nbsp;&nbsp;<i class="fa-solid fa-tags fa-lg"></i> &nbsp;สินค้า</button>
+                    <button class="my_menu">&nbsp;&nbsp;<i class="fa-solid fa-hand-holding fa-lg"></i>
+                        &nbsp;บริการ</button>
+                    <button class="my_menu">&nbsp;&nbsp;<i class="fa-solid fa-list-check fa-lg"></i>
+                        &nbsp;คอร์ส</button>
+                </div>
+
+                <div style="border:1px solid #ffffff; width:85%; margin: 10px auto 10px auto;"></div>
+                <button class="my_exit" onclick="closeWin();">EXIT&nbsp;<i
+                        class="fas fa-sign-out-alt fa-1x"></i></button>
+
+            </div>
+        </div>
+
+        <div id="main_content" class="container-fluid"></div>
+
+        <div id="main" class="container-fluid">
+            <!-- <div id="chart_div" style="width: 100%; height: 500px;"></div> -->
+            <ul class="dropdown-menu" id="minimenu">
+                <li class="mn_mini" id="mn1"><i class="fa-solid fa-pen"></i>
+                    <line>แก้ไขข้อมูล</line><input type="hidden" name="mn_id" id="mn_id">
+                </li>
+                <li class="mn_mini" id="mn2"><i class="fa-solid fa-trash"></i>
+                    <line>ลบออก</line><input type="hidden" name="mn_id2" id="mn_id2">
+                </li>
+            </ul>
+        </div>
+
+    </section>
+
+
+    <!-- JAVASCRIPT FILES -->
+    <script src="js/jquery.min.js"></script>
+    <script src="js/sweetalert2.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+
+    <script src="js/my_js/00_main.js"></script>
+    <script src="js/my_js/01_login.js"></script>
+    <script src="js/my_js/02_home.js"></script>
+
+</body>
+
+</html>
