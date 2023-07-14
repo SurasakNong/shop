@@ -1,10 +1,10 @@
 @font-face {
   font-family: "Athiti";
-  src: url("/fonts/Athiti-Regular.ttf");
+  src: url("../../fonts/Athiti-Regular.ttf");
 }
 @font-face {
   font-family: "Great Vibes";
-  src: url("/fonts/GreatVibes-Regular.ttf");
+  src: url("../../fonts/GreatVibes-Regular.ttf");
 }
 
 :root {

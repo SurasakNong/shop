@@ -1,11 +1,11 @@
-function showHome() {
+function showHome() {    
     $("#mainpage").show();
     document.getElementById('titleName').innerHTML = branch.bname;
     document.getElementById('titleName').setAttribute('title', branch.name);
     $("#main_content").hide();
     console.log('Hello Welcome Home');
-    //console.log(user);
-    //console.log(branch);
+    console.log(user);
+    console.log(branch);
     $("#username").html(user.name);
     $("#user_job").html(user.job);
     document.getElementById("avatar").src = user.pic;
