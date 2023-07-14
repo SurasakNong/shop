@@ -4,8 +4,8 @@ function showHome() {
     document.getElementById('titleName').setAttribute('title', branch.name);
     $("#main_content").hide();
     console.log('Hello Welcome Home');
-    console.log(user);
-    console.log(branch);
+    //console.log(user);
+    //console.log(branch);
     $("#username").html(user.name);
     $("#user_job").html(user.job);
     document.getElementById("avatar").src = user.pic;

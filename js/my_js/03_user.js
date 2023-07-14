@@ -55,14 +55,17 @@ function showusertable(per, p) { //======================== แสดงตา�
     waiting();
     var strSearch = document.getElementById('search_user').value;
     var n = ((p - 1) * per);
-    let my_val = [strSearch, per, p];
-    google.script.run.withSuccessHandler(fn_manage_user).rd_user(my_val);
-    function fn_manage_user(result) {
-        const myArr = JSON.parse(result);
-        let page_all = myArr[myArr.length - 1].page;
-        let rec_all = myArr[myArr.length - 1].rec;
-        page_selected = (p >= page_all) ? page_all : p;
-        var tt = `
+  $.ajax({
+    url: 'https://script.google.com/macros/s/AKfycbxT9hbNsM2mBd3ycq1IKlrJW18_KN7fntrKxiPPU6mVLdSzKVa9RFm7gmG93sSgXUOk/exec',
+    type: 'GET',
+    crossDomain: true,
+    data: { opt_k: 'read', opt_sh: strSearch, opt_pe: per, opt_p: p },
+    success: function (result) {
+      const myArr = JSON.parse(JSON.stringify(result));
+      let page_all = myArr[myArr.length - 1].page;
+      let rec_all = myArr[myArr.length - 1].rec;
+      page_selected = (p >= page_all) ? page_all : p;
+      var tt = `
         <table class="list-table table animate__animated animate__fadeIn" id="usertable" >
           <thead>
             <tr>
@@ -90,21 +93,22 @@ function showusertable(per, p) { //======================== แสดงตา�
             <div class="col-sm-3 mb-2" style="font-size: 0.8rem; text-align:right;">
               <label id="record"></label>
             </div>
-          </div>     
-        
-        
+          </div>                     
         `;
-        $("#table_user").html(tt);
-        document.getElementById("rowShow_user").value = rowperpage.toString();
-        document.getElementById("record").innerHTML = "ทั้งหมด : " + rec_all + " ข้อมูล";
-
-        for (let i = 0; i < myArr.length - 1; i++) {
-            n++;
-            listuserTable(myArr[i], n);
-        }
-        pagination_show(p, page_all, rowperpage, 'showusertable'); //<<<<<<<< แสดงตัวจัดการหน้าข้อมูล Pagination
-        waiting(false);
+      $("#table_user").html(tt);
+      document.getElementById("rowShow_user").value = rowperpage.toString();
+      document.getElementById("record").innerHTML = "ทั้งหมด : " + rec_all + " ข้อมูล";
+      for (let i = 0; i < myArr.length - 1; i++) {
+        n++;
+        listuserTable(myArr[i], n);
+      }
+      pagination_show(p, page_all, rowperpage, 'showusertable'); //<<<<<<<< แสดงตัวจัดการหน้าข้อมูล Pagination
+      waiting(false);
+    },
+    error: function (err) {
+      console.log("The server  ERROR says: " + err);
     }
+  });
 }
 
 $(document).on("change", "#rowShow_user", function () { //========== เปลี่ยนค่าจำนวนแถวที่แสดงในตาราง

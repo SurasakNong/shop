@@ -1,5 +1,156 @@
-//=== ฟังก์ชัน GET()
-var _get = function (val) {
+//=================================== DATE TIME Function ============================================
+function dateNow(st) { //============================= วันที่ปัจจุบันสตริง
+  var m = new Date();
+  var dateString = "";
+  if (st === "dmy") { //==== 14/06/2023 22:24:49
+      dateString =
+          ("0" + m.getDate()).slice(-2) + "/" +
+          ("0" + (m.getMonth() + 1)).slice(-2) + "/" +
+          m.getFullYear() + " " +
+          ("0" + m.getHours()).slice(-2) + ":" +
+          ("0" + m.getMinutes()).slice(-2) + ":" +
+          ("0" + m.getSeconds()).slice(-2);
+  } else if (st === "mdy") {  //==== 06/14/2023 22:24:49
+      dateString =
+          ("0" + (m.getMonth() + 1)).slice(-2) + "/" +
+          ("0" + m.getDate()).slice(-2) + "/" +
+          m.getFullYear() + " " +
+          ("0" + m.getHours()).slice(-2) + ":" +
+          ("0" + m.getMinutes()).slice(-2) + ":" +
+          ("0" + m.getSeconds()).slice(-2);
+  } else if (st === "ymd") {  //==== 2023/06/14 22:24:49
+      dateString =
+          m.getFullYear() + "/" +
+          ("0" + (m.getMonth() + 1)).slice(-2) + "/" +
+          ("0" + m.getDate()).slice(-2) + " " +
+          ("0" + m.getHours()).slice(-2) + ":" +
+          ("0" + m.getMinutes()).slice(-2) + ":" +
+          ("0" + m.getSeconds()).slice(-2);
+  } else {
+      dateString = m.getTime(); //Time Stamp
+  }
+  return dateString;
+}
+
+function tsToDate(ts, fn = "dmy") { //================= Timestamp to Date
+  var m = new Date(ts);
+  var dateString = "";
+  if (fn === "dmy") { //==== 14/06/2023 22:24:49
+      dateString =
+          ("0" + m.getDate()).slice(-2) + "/" +
+          ("0" + (m.getMonth() + 1)).slice(-2) + "/" +
+          m.getFullYear() + " " +
+          ("0" + m.getHours()).slice(-2) + ":" +
+          ("0" + m.getMinutes()).slice(-2) + ":" +
+          ("0" + m.getSeconds()).slice(-2);
+  } else if (fn === "mdy") {  //==== 06/14/2023 22:24:49
+      dateString =
+          ("0" + (m.getMonth() + 1)).slice(-2) + "/" +
+          ("0" + m.getDate()).slice(-2) + "/" +
+          m.getFullYear() + " " +
+          ("0" + m.getHours()).slice(-2) + ":" +
+          ("0" + m.getMinutes()).slice(-2) + ":" +
+          ("0" + m.getSeconds()).slice(-2);
+  } else if (fn === "ymd") {  //==== 2023/06/14 22:24:49
+      dateString =
+          m.getFullYear() + "/" +
+          ("0" + (m.getMonth() + 1)).slice(-2) + "/" +
+          ("0" + m.getDate()).slice(-2) + " " +
+          ("0" + m.getHours()).slice(-2) + ":" +
+          ("0" + m.getMinutes()).slice(-2) + ":" +
+          ("0" + m.getSeconds()).slice(-2);
+  } else {
+      dateString = ts; //Time Stamp
+  }
+  return dateString;
+}
+
+function mdyToTimestamp(strDate) { //====== mdyToTimestamp('02/13/2009 23:31:30') ==> Timestamp
+  var datum = Date.parse(strDate);
+  return datum;
+}
+
+function dmyToTimestamp(strDate) { //====== dmyToTimestamp('13/02/2009 23:31:30') ==> Timestamp
+  let mdy_data = strDate.split("/");
+  const dmy_data = mdy_data[1] + "/" + mdy_data[0] + "/" + mdy_data[2];
+  var datum = Date.parse(dmy_data);
+  return datum;
+}
+
+function diffTimestamp(stT, enT, fn = "m") { //======== ผลต่างของเวลา Timestamp
+  var dif_ts = enT - stT;
+  var res = 0;
+  if (fn === "s") { //แสดงเป็น วินาที
+      res = dif_ts / (1000);
+  } else if (fn === "m") { //แสดงเป็น นาที
+      res = dif_ts / (1000 * 60);
+  } else if (fn === "h") { //แสดงเป็น ชั่วโมง
+      res = dif_ts / (1000 * 60 * 60);
+  } else if (fn === "D") { //แสดงเป็น วัน
+      res = dif_ts / (1000 * 60 * 60 * 24);
+  } else {
+      res = 0;
+  }
+  return res.toFixed() * 1;
+}
+
+function encode_ts() { //===============================เข้ารหัสรหัส
+  // encode time
+  const d_now = new Date();
+  let a_now = d_now.getTime().toString();
+  let arr_now = a_now.split("");
+  let arr_sum = arr_now[0] * arr_now[1] * arr_now[2];
+  for (let i = 3; i < arr_now.length; i++) {
+      arr_sum = arr_sum + (+arr_now[i]);
+  }
+  arr_sum = ("000" + (arr_sum * 3)).slice(-3);
+  let a_ran = Math.floor(Math.random() * 10);
+  arr_now.push(a_ran);
+  arr_now.push(arr_sum);
+  let a_code = arr_now.join("");
+  return a_code; // a_code = "16756746025315243"; 
+}
+
+function decode_ts(ts_code) { //========================== ถอดรหัส
+  //let datain = "16756746025315243"; 
+  //((1*6*7)+5+6+7+4+6+0+2+5+3+1)*3, 1675674602531 5 243 , 5 is random, 243 is code check
+  let a_data = ts_code.split("");
+  let a_sum = a_data[0] * a_data[1] * a_data[2]; //(1*6*7)
+  //let ok_code = 0;
+  for (let i = 3; i < a_data.length - 4; i++) { //(1*6*7)+5+6+7+4+6+0+2+5+3+1
+      a_sum = a_sum + (+a_data[i]);
+  }
+  let val_ts = (ts_code.substr(ts_code.length - 3)) * 1;
+  a_sum = a_sum * 3; //((1*6*7)+5+6+7+4+6+0+2+5+3+1)*3
+  let a_time = [];
+  for (let j = 0; j < a_data.length - 4; j++) { //1675674602531
+      a_time.push(a_data[j]);
+  }
+  let ok_code = (a_sum == val_ts) ? 1 : 0; // 243
+  let result = [];
+  result.push(a_time.join("")); //time stamp 1675674602531
+  result.push(a_sum); // ผลรวมเลขตรวจสอบ 243
+  result.push(ok_code); // 0=ไม่ถูกต้อง, 1=ถูกต้อง
+  return result;
+}
+
+function haveTime(tt) { //===================== เวลาเหลือคิดจาก Timestamp
+  const t_now = new Date();
+  const t_taget = 10 * 60; // second
+  time_now = Math.floor(t_now.getTime() / 1000);
+  let tt2 = Math.floor(tt / 1000);
+  let diff_sec_all = time_now - tt2;
+
+  let diff_min = Math.floor(diff_sec_all / 60)
+  let diff_sec = diff_sec_all - (diff_min * 60);
+  let res = (diff_sec_all > t_taget) ? false : true;
+  let result = [((t_taget / 60) - (diff_min + 1)), (60 - (diff_sec + 1)), res];
+  return result
+}
+//===================== Function Access ==============================================================
+
+
+var _get = function (val) {  //=============== ฟังก์ชัน GET()
   tmp = []; // กำหนดตัวแปรเก็บค่า เป็น array
   // เก็บค่า url โดยตัด ? อันแรกออก แล้วแยกโดยตัวแบ่ง &
   var items = location.search.substr(1).split("&");
@@ -7,13 +158,12 @@ var _get = function (val) {
     tmp = items[index].split("="); // แยกระหว่างชื่อตัวแปร และค่าของตัวแปร
     // ถ้าค่าที่ส่งมาตรวจสอบชื่อตัวแปรตรง ให้เก็บค่าผลัพธ์เป็นค่าของตัวแปรนั้นๆ
     //if (tmp[0] === val) result = decodeURIComponent(tmp[1]);
-    result = (tmp[0] === val)?tmp[1]:null;
+    result = (tmp[0] === val) ? tmp[1] : null;
   }
   return result;  // คืนค่าของตัวแปรต้องการ ถ้าไม่มีจะเป็น null
 }
 
-// function to make form values to json format
- function serializeObject() {
+function serializeObject() { //============= function to make form values to json format
   var o = {};
   var a = this.serializeArray();
   $.each(a, function () {
@@ -29,17 +179,14 @@ var _get = function (val) {
   return o;
 };
 
-// function to set cookie
-function setCookie(cname, cvalue, exdays) {
+function setCookie(cname, cvalue, exdays) { //================== function to set cookie
   var d = new Date();
   d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
   var expires = "expires=" + d.toUTCString();
   document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
 
-
-// get or read cookie
-function getCookie(cname) {
+function getCookie(cname) {  //==================================== get or read cookie
   var name = cname + "=";
   var decodedCookie = decodeURIComponent(document.cookie);
   var ca = decodedCookie.split(";");
@@ -54,6 +201,49 @@ function getCookie(cname) {
     }
   }
   return "";
+}
+
+function isNumber(n) { return /^-?[\d.]+(?:e-?\d+)?$/.test(n); }
+
+//=========================== Alert Warning ============================================================
+function myAlert(icon, title) {
+  const Toast = Swal.mixin({
+      toast: true,
+      position: 'center',
+      width: '330px',
+      showConfirmButton: false,
+      timer: 2300,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+          toast.addEventListener('mouseenter', Swal.stopTimer)
+          toast.addEventListener('mouseleave', Swal.resumeTimer)
+      }
+  })
+  Toast.fire({
+      icon: icon, //'success'
+      title: title  //'Signed in successfully'
+  })
+
+}
+
+function sw_Alert(icon, title, desc) {
+  Swal.fire({
+      customClass: {
+          confirmButton: 'mybtn btnOk'
+          //confirmButton: 'btn btn-primary'
+      },
+
+      buttonsStyling: false,
+      icon: icon,
+      title: title,
+      text: desc,
+      showClass: {
+          popup: 'animate__animated animate__fadeInDown'
+      },
+      hideClass: {
+          popup: 'animate__animated animate__fadeOutUp'
+      }
+  })
 }
 
 // show alert mini with time 2.3 sec
@@ -134,6 +324,7 @@ function to_alert(icon, title, desc) {
   })
 }
 
+//============================= Encode and Decode Data ========================================================
 function deCodeMode(mode) {
   var result = [];
   if ((mode != '') && (isNumber(mode))) {
@@ -176,9 +367,8 @@ function deCodeMode(mode) {
 }
 
 
-function isNumber(n) { return /^-?[\d.]+(?:e-?\d+)?$/.test(n); }
-
-function pagination_show(shopid, page, pageall, per, fn) { //============== แสดงตัวจัดการหน้าข้อมูล Pagination      
+//==========================================================================================================
+function pagination_show_old(shopid, page, pageall, per, fn) { //============== แสดงตัวจัดการหน้าข้อมูล Pagination      
   let max_p = parseInt(pageall);
   let p = parseInt(page);
   let p_prev = (p > 1) ? p - 1 : 1;
