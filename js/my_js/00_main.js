@@ -150,46 +150,62 @@ function validate(evt) { //กด Input text ได้เฉพาะตัว�
     }
 }
 
-function initDropdownList(id, data) { // (idSelect , lenghtData) initDropdownList('selPos','dataset!A2:B');
-    google.script.run.withSuccessHandler(fn_manage_user).rd_dataToSel(data);
-    function fn_manage_user(result) {
-        const myArr = JSON.parse(result);
-        //console.log(myArr);
-        var option;
-        select = document.getElementById(id);
-        /*while (select.options.length > 0) {
-            select.remove(0);
-        }*/
-        for (let i = 0; i <= myArr.length - 1; i++) {
-            option = document.createElement('option');
-            option.value = myArr[i].id;
-            option.text = myArr[i].name;
-            select.add(option);
+function initDropdownList(id, data, idSel, nameSel) { // (idSelect , lenghtData,idcol,namecol) initDropdownList('selPos','dataset!A2:B',0,1);
+    $.ajax({
+        url: urlUser,
+        type: 'GET',
+        crossDomain: true,
+        data: { opt_k: 'readDataSel', opt_dataSel:data, opt_selId:idSel, opt_selNm:nameSel },
+        success: function (result) {
+            const myArr = JSON.parse(JSON.stringify(result));
+            var option;
+            select = document.getElementById(id);
+            /*while (select.options.length > 0) {
+                select.remove(0);
+            }*/
+            for (let i = 0; i <= myArr.length - 1; i++) {
+                option = document.createElement('option');
+                option.value = myArr[i].id;
+                option.text = myArr[i].name;
+                select.add(option);
+            }
+        },
+        error: function (err) {
+            console.log("readDataSel ERROR : " + err);
         }
-    }
+    });
+
 }
 
-function setDropdownList(id, data, txt) { //setDropdownList('selBranch','branch!A2:B',document.getElementById('branch'+id).innerHTML);
-    google.script.run.withSuccessHandler(fn_manage_user).rd_dataToSel(data);
-    function fn_manage_user(result) {
-        const myArr = JSON.parse(result);
-        var option;
-        select = document.getElementById(id);
-        while (select.options.length > 0) {
-            select.remove(0);
-        }
-        for (let i = 0; i <= myArr.length - 1; i++) {
-            option = document.createElement('option');
-            option.value = myArr[i].id;
-            option.text = myArr[i].name;
-            select.add(option);
-        }
-        $('#' + id + ' option').each(function () {
-            if ($(this).text() == txt) {
-                $(this).prop("selected", true);
+function setDropdownList(id, data, txt, idCol, nameCol) { //setDropdownList('selBranch','branch!A2:B',document.getElementById('branch'+id).innerHTML);
+    $.ajax({
+        url: urlUser,
+        type: 'GET',
+        crossDomain: true,
+        data: { opt_k: 'readDataSel', opt_dataSel:data, opt_selId:idCol, opt_selNm:nameCol },
+        success: function (result) {
+            const myArr = JSON.parse(JSON.stringify(result));
+            var option;
+            var select = document.getElementById(id);
+            while (select.options.length > 0) {
+                select.remove(0);
             }
-        });
-    }
+            for (let i = 0; i <= myArr.length - 1; i++) {
+                option = document.createElement('option');
+                option.value = myArr[i].id;
+                option.text = myArr[i].name;
+                select.add(option);
+            }
+            $('#' + id + ' option').each(function () {
+                if ($(this).text() == txt) {
+                    $(this).prop("selected", true);
+                }
+            });
+        },
+        error: function (err) {
+            console.log("readDataSel ERROR : " + err);
+        }
+    });
 }
 
 function dataGetbyId_val(id) {

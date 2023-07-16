@@ -29,7 +29,7 @@ $(document).on("submit", "#login_form", function () {
     let ts_now = dateNow("dmy");
 
     $.ajax({
-        url: 'https://script.google.com/macros/s/AKfycbxT9hbNsM2mBd3ycq1IKlrJW18_KN7fntrKxiPPU6mVLdSzKVa9RFm7gmG93sSgXUOk/exec',
+        url: urlUser,
         type: 'GET',
         crossDomain: true,
         data: { opt_k: 'login', opt_un: username, opt_pw: pass, opt_dt: ts_now },
@@ -40,8 +40,9 @@ $(document).on("submit", "#login_form", function () {
             if (obj.result == true) {
                 //[0result, 1id, 2displayname, 3level, 4picUrl, 5job, 6branch, 7email, 8tel, 9uname]
                 Object.assign(user, {
+                    id: obj.id,
                     uname: obj.uname,
-                    name: obj.disName == "" || obj.disName == "undefined" ? "Unknow" : obj.disName,
+                    name: obj.name == "" || obj.name == "undefined" ? "Unknow" : obj.name,
                     job: obj.job,
                     branch: obj.brName,
                     email: obj.email,

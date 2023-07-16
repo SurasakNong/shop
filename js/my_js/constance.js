@@ -1,3 +1,44 @@
+//=================================== Constant ======================================================
+var u_reg = _get('mode'); //http://192.168.50.14:8092/iam/index.html?mode=221523126391103902
+var ts = "";
+var ts_code = "";
+var ts_ok = 0;
+
+var urlUser = 'https://script.google.com/macros/s/AKfycbxT9hbNsM2mBd3ycq1IKlrJW18_KN7fntrKxiPPU6mVLdSzKVa9RFm7gmG93sSgXUOk/exec';
+var user = {
+  id: 0,
+  uname: 'Unknow',
+  name: 'Unknow',
+  job: 'Unknow',
+  branch: 'Unknow',
+  email: '',
+  tel: '',
+  pic: '',
+  lv: ''
+}
+
+var branch = {
+  id: 0,
+  name: 'Unknow',
+  bname: 'Unknow',
+  add: '',
+  tel: '',
+  email: '',
+  tax: '',
+  logo: '',
+  qr: '',
+  line: ''
+}
+
+var pic_noAvatar = 'images/avatar.png';
+var pic_noLogo = 'images/youlogo.png';
+var pic_noQrcode = 'images/qrcode.jpg';
+
+var openMenu = false;
+
+var rowperpage = 12; //=== จำนวนแถวที่แสดงข้อมูลต่อหน้า
+var page_selected = 1; //=== หน้าที่เลือก
+var h_menu = (getComputedStyle(document.querySelector(':root')).getPropertyValue('--h_menu')) * 1; //ดึงค่าความสูงเมนูจาก CSS
 //=================================== DATE TIME Function ============================================
 function dateNow(st) { //============================= วันที่ปัจจุบันสตริง
   var m = new Date();
@@ -150,7 +191,8 @@ function haveTime(tt) { //===================== เวลาเหลือค�
 //===================== Function Access ==============================================================
 
 
-var _get = function (val) {  //=============== ฟังก์ชัน GET()
+//var _get = function (val) {  //=============== ฟังก์ชัน GET()
+function _get(val){
   tmp = []; // กำหนดตัวแปรเก็บค่า เป็น array
   // เก็บค่า url โดยตัด ? อันแรกออก แล้วแยกโดยตัวแบ่ง &
   var items = location.search.substr(1).split("&");

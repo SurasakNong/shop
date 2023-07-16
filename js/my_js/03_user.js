@@ -14,7 +14,7 @@ function show_manageuser_tb() { //========================== แสดงค้�
               <label id="fn_name" ><i class="fa-solid fa-user fa-lg"></i> &nbsp; พนักงาน</label>
               <form id="fmsearch_user" >
                   <div class="input-group mb-2">
-                      <input type="text" id="search_user" onkeypress="handle_search(event)" class="form-control" placeholder="คำค้นหา.." aria-label="Search" aria-describedby="button-search">
+                      <input type="text" id="search_user" onkeypress="handle_userSearch(event)" class="form-control" placeholder="คำค้นหา.." aria-label="Search" aria-describedby="button-search">
                       <button class="b-success" type="button" id="bt_search_user" title="ค้นหา"><i class="fas fa-search"></i></button>
                       <button class="b-add ms-2" id="bt_add_user" type="button" title="เพิ่มข้อมูล"><i class="fa-solid fa-user-plus fa-lg"></i></button>
                       <button class="b-back ms-2" id="bt_back" name="bt_back" type="button" title="กลับ"><i class="fa-solid fa-xmark fa-lg"></i></button>
@@ -42,7 +42,7 @@ $(document).on('click', "#bt_search_user", function () {  //ค้นหาร�
     showusertable(rowperpage, 1);
 });
 
-function handle_search(e) {
+function handle_userSearch(e) {
     if (e.keyCode === 13) {
         e.preventDefault();
         showusertable(rowperpage, 1);
@@ -50,13 +50,12 @@ function handle_search(e) {
 }
 
 
-
 function showusertable(per, p) { //======================== แสดงตาราง
     waiting();
     var strSearch = document.getElementById('search_user').value;
     var n = ((p - 1) * per);
   $.ajax({
-    url: 'https://script.google.com/macros/s/AKfycbxT9hbNsM2mBd3ycq1IKlrJW18_KN7fntrKxiPPU6mVLdSzKVa9RFm7gmG93sSgXUOk/exec',
+    url: urlUser,
     type: 'GET',
     crossDomain: true,
     data: { opt_k: 'read', opt_sh: strSearch, opt_pe: per, opt_p: p },
@@ -151,8 +150,9 @@ function listuserTable(ob, i_no) {  //========== ฟังก์ชั่นเ�
     col[n_col - 1].style = "text-align: center;";
 }
 
-function showUserAdd() {  //========================= แสดงหน้าเพิ่มผู้ใช้งาน
-    var html = `     
+$(document).on("click", "#bt_add_user", function () { //========== เปิดเพิ่มผู้ใช้งาน
+  $("#table_user").html("");
+  var html = `     
     <div id="user_add">    
       <form class="animate__animated animate__fadeIn" id="add_user_form" style="padding:20px;">
         <div class="row mb-3 justify-content-md-center">
@@ -208,11 +208,11 @@ function showUserAdd() {  //========================= แสดงหน้า�
       </form>
     </div>  
     `;
-    $("#add_user").html(html);
-    initDropdownList('selBranch', 'branch!A2:B');
-    initDropdownList('selPos', 'dataset!A2:B');
+  $("#add_user").html(html);
+  initDropdownList('selBranch', 'branch!A2:B', 0, 1);
+  initDropdownList('selPos', 'dataset!A2:B', 0, 1);
+});
 
-}
 
 $(document).on("click", "#qrcode", function () { //========== เปิดเพิ่มผู้ใช้งาน
     document.getElementById("line_qrcode").style.display = "block";
@@ -226,11 +226,6 @@ $(document).on("click", "#qrcode", function () { //========== เปิดเพ
         
         `;
     $("#line_qrcode").html(tt);
-});
-
-$(document).on("click", "#bt_add_user", function () { //========== เปิดเพิ่มผู้ใช้งาน
-    $("#table_user").html("");
-    showUserAdd();
 });
 
 $(document).on("click", "#cancel_add_user", function () { //========== ยกเลิกการเพิ่มผู้ใช้งาน
@@ -248,28 +243,34 @@ $(document).on("submit", "#add_user_form", function () {  //===== ตกลง�
     const sel_branch = document.getElementById("selBranch").options[document.getElementById("selBranch").selectedIndex].text;
     const sel_pos = document.getElementById("selPos").options[document.getElementById("selPos").selectedIndex].text;
     const dt_create = dateNow('dmy');
-    let fm_val = [name_user, email_user, tel_user, uName, "123456", sel_branch, sel_pos, '1111', dt_create];
     waiting();
-    google.script.run.withSuccessHandler(fn_add_user).add_user(fm_val);
-    function fn_add_user(result) {
+    $.ajax({
+      url: urlUser,
+      type: 'GET',
+      crossDomain: true,
+      data: { opt_k: 'add', opt_nm:name_user, opt_em:email_user, opt_tl:tel_user, 
+      opt_un:uName, opt_pw:"123456", opt_br:sel_branch, opt_po:sel_pos, opt_lv:"11111111", opt_dt:dt_create},
+      success: function (result) {
         waiting(false);
-        if (result == 'success') {
-            myAlert("success", "เพิ่มผู้ใช้งาน สำเร็จ");
-            $("#add_user").html("");
-            showusertable(rowperpage, page_selected);
-        } else if (result == "exits") {
-            sw_Alert('error', 'เพิ่มข้อมูล ไม่สำเร็จ', uName + ' ซ้ำ! มีการใช้ชื่อนี้แล้ว');
-        } else {
-            sw_Alert('error', 'เพิ่มข้อมูล ไม่สำเร็จ', 'ระบบขัดข้อง โปรดลองใหม่ในภายหลัง');
-        }
-    }
+        if(result == "success"){
+          myAlert("success", "เพิ่มผู้ใช้งาน สำเร็จ");
+          $("#add_user").html("");
+          showusertable(rowperpage, page_selected);
+        }else if(result == "exits"){
+          sw_Alert('error', 'เพิ่มข้อมูล ไม่สำเร็จ', uName + ' ซ้ำ! มีการใช้ชื่อนี้แล้ว');
+        }else{
+          sw_Alert('error', 'เพิ่มข้อมูล ไม่สำเร็จ', 'ระบบขัดข้อง โปรดลองใหม่ในภายหลัง');
+        }          
+      },
+      error: function (err) {
+          console.log("Add new user ERROR : " + err);
+      }
+    });
     return false;
 });
 
 function delete_user_Row(id) { //================================ ลบข้อมูลผู้ใช้งาน
-    var fm_val = [id];
     var user_name = document.getElementById('name' + id).innerHTML + ' (' + document.getElementById('u_name' + id).value + ')';
-
     const swalWithBootstrapButtons = Swal.mixin({
         customClass: {
             confirmButton: 'mybtn btnOk',
@@ -288,16 +289,24 @@ function delete_user_Row(id) { //================================ ลบข้�
     }).then((result) => {
         if (result.isConfirmed) {
             waiting();
-            google.script.run.withSuccessHandler(fn_del_user).del_user(fm_val);
-            function fn_del_user(result) {
-                if (result == true) {
-                    myAlert("success", "ข้อมูลถูกลบแล้ว !");
-                    showusertable(rowperpage, page_selected);
-                } else {
-                    sw_Alert('error', 'ลบข้อมูล ไม่สำเร็จ', 'ระบบขัดข้อง โปรดลองใหม่ในภายหลัง');
-                }
-            }
-
+            $.ajax({
+              url: urlUser,
+              type: 'GET',
+              crossDomain: true,
+              data: { opt_k:'del', opt_id:id },
+              success: function (result) {
+                waiting(false);
+                if(result == "success"){
+                  myAlert("success", "ข้อมูลถูกลบแล้ว !");
+                  showusertable(rowperpage, page_selected);
+                }else{
+                  sw_Alert('error', 'ลบข้อมูล ไม่สำเร็จ', 'ระบบขัดข้อง โปรดลองใหม่ในภายหลัง');
+                }          
+              },
+              error: function (err) {
+                  console.log("Delete user ERROR : " + err);
+              }
+            });         
         } else if (result.dismiss === Swal.DismissReason.cancel) {
             /*swalWithBootstrapButtons.fire(
                 'ยกเลิก',
@@ -308,95 +317,91 @@ function delete_user_Row(id) { //================================ ลบข้�
     })
 }
 
-function showUserEdit() {  //========================= แสดงหน้าแก้ไขข้อมูลผู้ใช้งาน
-    var html = `     
-    <div id="user_edit">    
-      <form class="animate__animated animate__fadeIn" id="edit_user_form" style="padding:20px;">
-        <div class="row mb-3 justify-content-md-center">
-          <div style="font-size:1.5rem; text-align: center;">
-            แก้ไขข้อมูลพนักงาน
-          </div>     
-        </div> 
-        <div class="row mb-3 justify-content-center" style="position: relative;">
-          <img id="picuser" src="" alt="Avatar" style="width:150px; border-radius:50%;">  
-          <label class="camera" for="upload_picUser" title="อัพโหลดรูปใหม่">
-            <i class="fa-solid fa-camera"></i>  
-            <input type="file" id="upload_picUser" style="display:none" accept="image/*">
-          </label>
-        </div> 
-        <div class="row">
-          <div class="col-md">
-            <div class="input-group mb-2">
-              <span class="input-group-text" ><i class="fa fa-user"></i></span>
-              <input type="text" id="name_user" class="form-control" placeholder="ชื่อ-นามสกุล" aria-label="Fullname" required>
-            </div>
-            <div class="input-group mb-2">
-              <span class="input-group-text" ><i class="fa-regular fa-envelope"></i></span>
-              <input type="email" id="email_user" class="form-control" placeholder="อีเมล" aria-label="Email">
-            </div>
-            <div class="input-group mb-3">
-              <span class="input-group-text" ><i class="fa-solid fa-phone"></i></span>
-              <input type="text" id="tel_user" class="form-control" onkeypress='validate(event)' placeholder="เบอร์โทรศัพท์" aria-label="Phone number">
-            </div>
-            <div class="row mb-3 justify-content-center" style="text-align: center;">
-                <button type="button" class="mybtn btnLine" id="qrcode"><i class="fa-brands fa-line fa-lg"></i> Add</button>
-                <button type="button" class="mybtn btnLine" id="resetpass" title="รีเซ็ทรหัสผ่าน"><i class="fa-solid fa-arrows-rotate fa-sm"></i> รหัสผ่าน</button>
-            </div>
+
+function edit_user_Row(id) { //================================ เปิดหน้าแก้ไขข้อมูลผู้ใช้งาน    
+  var html = `     
+  <div id="user_edit">    
+    <form class="animate__animated animate__fadeIn" id="edit_user_form" style="padding:20px;">
+      <div class="row mb-3 justify-content-md-center">
+        <div style="font-size:1.5rem; text-align: center;">
+          แก้ไขข้อมูลพนักงาน
+        </div>     
+      </div> 
+      <div class="row mb-3 justify-content-center" style="position: relative;">
+        <img id="picuser" src="" alt="Avatar" style="width:150px; border-radius:50%;">  
+        <label class="camera" for="upload_picUser" title="อัพโหลดรูปใหม่">
+          <i class="fa-solid fa-camera"></i>  
+          <input type="file" id="upload_picUser" style="display:none" accept="image/*">
+        </label>
+      </div> 
+      <div class="row">
+        <div class="col-md">
+          <div class="input-group mb-2">
+            <span class="input-group-text" ><i class="fa fa-user"></i></span>
+            <input type="text" id="name_user" class="form-control" placeholder="ชื่อ-นามสกุล" aria-label="Fullname" required>
           </div>
-  
-          <div class="col-md">
-            <div class="input-group mb-2">
-              <label class="input-group-text" for="selBranch"><i class="fa-solid fa-house"></i></label>
-              <select class="form-select" id="selBranch">
-                <option selected value="0">-- สาขา --</option>
-              </select>
-            </div>
-  
-            <div class="input-group mb-2">
-              <label class="input-group-text" for="selPos"><i class="fa-solid fa-briefcase"></i></label>
-              <select class="form-select" id="selPos">
-                <option selected value="0">-- ตำแหน่ง --</option>
-              </select>
-            </div>
-  
-            <div class="input-group mb-3">
-              <span class="input-group-text" ><i class="fa-regular fa-user"></i></span>
-              <input type="text" id="userName" class="form-control" placeholder="User Name" aria-label="User Name" required>
-            </div>
-            <div class="row justify-content-center" style="text-align: center;">
-                <button type="submit" class="mybtn btnOk">บันทึก</button>
-                <button type="button" class="mybtn btnCan" id="cancel_edit_user">ยกเลิก</button>
-                <input id="id_user" type="hidden">
-                <input id="url_PicUser" type="hidden">
-            </div>
+          <div class="input-group mb-2">
+            <span class="input-group-text" ><i class="fa-regular fa-envelope"></i></span>
+            <input type="email" id="email_user" class="form-control" placeholder="อีเมล" aria-label="Email">
           </div>
-        </div>       
-      </form>
-    </div>  
-    `;
-    $("#edit_user").html(html);
+          <div class="input-group mb-3">
+            <span class="input-group-text" ><i class="fa-solid fa-phone"></i></span>
+            <input type="text" id="tel_user" class="form-control" onkeypress='validate(event)' placeholder="เบอร์โทรศัพท์" aria-label="Phone number">
+          </div>
+          <div class="row mb-3 justify-content-center" style="text-align: center;">
+              <button type="button" class="mybtn btnLine" id="qrcode"><i class="fa-brands fa-line fa-lg"></i> Add</button>
+              <button type="button" class="mybtn btnLine" id="resetpass" title="รีเซ็ทรหัสผ่าน"><i class="fa-solid fa-arrows-rotate fa-sm"></i> รหัสผ่าน</button>
+          </div>
+        </div>
+
+        <div class="col-md">
+          <div class="input-group mb-2">
+            <label class="input-group-text" for="selBranch"><i class="fa-solid fa-house"></i></label>
+            <select class="form-select" id="selBranch">
+              <option selected value="0">-- สาขา --</option>
+            </select>
+          </div>
+
+          <div class="input-group mb-2">
+            <label class="input-group-text" for="selPos"><i class="fa-solid fa-briefcase"></i></label>
+            <select class="form-select" id="selPos">
+              <option selected value="0">-- ตำแหน่ง --</option>
+            </select>
+          </div>
+
+          <div class="input-group mb-3">
+            <span class="input-group-text" ><i class="fa-regular fa-user"></i></span>
+            <input type="text" id="userName" class="form-control" placeholder="User Name" aria-label="User Name" required>
+          </div>
+          <div class="row justify-content-center" style="text-align: center;">
+              <button type="submit" class="mybtn btnOk">บันทึก</button>
+              <button type="button" class="mybtn btnCan" id="cancel_edit_user">ยกเลิก</button>
+              <input id="id_user" type="hidden">
+              <input id="url_PicUser" type="hidden">
+          </div>
+        </div>
+      </div>       
+    </form>
+  </div>  
+  `;
+  $("#edit_user").html(html);
+  $("#id_user").val(id);
+  setDropdownList('selBranch', 'branch!A2:B', document.getElementById('branch' + id).innerHTML,0,1);
+  setDropdownList('selPos', 'dataset!A2:B', document.getElementById('job' + id).innerHTML,0,1);
+  var picUser = (document.getElementById('u_urlpic' + id).value !== '') ? document.getElementById('u_urlpic' + id).value : pic_noAvatar;
+  document.getElementById("picuser").src = picUser;
+  $("#url_PicUser").val(picUser);
+  $("#name_user").val(document.getElementById('name' + id).innerHTML);
+  $("#email_user").val(document.getElementById('email' + id).innerHTML);
+  $("#tel_user").val(document.getElementById('tel' + id).innerHTML);
+  $("#userName").val(dataGetbyId_val('u_name' + id));
+  $("#table_user").html("");
 }
 
 $(document).on("click", "#cancel_edit_user", function () { //========== ยกเลิกการแก้ไขผู้ใช้งาน
-    $("#edit_user").html("");
-    showusertable(rowperpage, page_selected);
+  $("#edit_user").html("");
+  showusertable(rowperpage, page_selected);
 });
-
-function edit_user_Row(id) { //================================ เปิดหน้าแก้ไขข้อมูลผู้ใช้งาน    
-    showUserEdit();
-    $("#id_user").val(id);
-    setDropdownList('selBranch', 'branch!A2:B', document.getElementById('branch' + id).innerHTML);
-    setDropdownList('selPos', 'dataset!A2:B', document.getElementById('job' + id).innerHTML);
-    var picUser = (document.getElementById('u_urlpic' + id).value !== '') ? document.getElementById('u_urlpic' + id).value : pic_noAvatar;
-    document.getElementById("picuser").src = picUser;
-    $("#url_PicUser").val(picUser);
-    $("#name_user").val(document.getElementById('name' + id).innerHTML);
-    $("#email_user").val(document.getElementById('email' + id).innerHTML);
-    $("#tel_user").val(document.getElementById('tel' + id).innerHTML);
-    $("#userName").val(dataGetbyId_val('u_name' + id));
-    $("#table_user").html("");
-}
-
 
 $(document).on("change", "#upload_picUser", function (e) {
     if (e.target.files) {
@@ -482,21 +487,30 @@ $(document).on("submit", "#edit_user_form", function () {  //===== ตกลง�
     const sel_pos = document.getElementById("selPos").options[document.getElementById("selPos").selectedIndex].text;
     const userPic = my_form.find("#url_PicUser").val();
     const dt_modi = dateNow('dmy');
-    let fm_val = [id_user_sel, name_user, email_user, tel_user, uName, sel_branch, sel_pos, userPic, dt_modi];
     waiting();
-    google.script.run.withSuccessHandler(fn_edit_user).edit_user(fm_val);
-    function fn_edit_user(result) {
+    $.ajax({
+      url: urlUser,
+      type: 'GET',
+      crossDomain: true,
+      data: { opt_k: 'edit', opt_id:id_user_sel, opt_nm:name_user, opt_em:email_user, opt_tl:tel_user, 
+      opt_un:uName, opt_br:sel_branch, opt_po:sel_pos, opt_urlPic:userPic, opt_dt:dt_modi },
+      success: function (result) {
         waiting(false);
-        if (result == "success") {
-            myAlert("success", "แก้ไขข้อมูล สำเร็จ");
-            $("#edit_user").html("");
-            showusertable(rowperpage, page_selected);
-        } else if (result == "exits") {
+        if(result == "success"){
+          waiting(false);
+          myAlert("success", "แก้ไขข้อมูล สำเร็จ");
+          $("#edit_user").html("");
+          showusertable(rowperpage, page_selected);
+        }else if (result == "exits") {
             sw_Alert('warning', 'แก้ไขข้อมูล ไม่สำเร็จ', 'User Name ซ้ำกับผู้อื่น กรุณาเปลี่ยนใหม่');
-        } else {
+        }else {
             sw_Alert('error', 'แก้ไขข้อมูล ไม่สำเร็จ', 'ระบบขัดข้อง โปรดลองใหม่ในภายหลัง');
-        }
-    }
+        }          
+      },
+      error: function (err) {
+          console.log("Edit user ERROR : " + err);
+      }
+    });
     return false;
 });
 
@@ -520,18 +534,26 @@ $(document).on("click", "#resetpass", function () { //========== รีเซ็
         reverseButtons: false
     }).then((result) => {
         if (result.isConfirmed) {
-            waiting();
-            google.script.run.withSuccessHandler(fn_resetpass).reset_pass_user(id_user_sel);
-            function fn_resetpass(result) {
-                if (result == 'success') {
-                    waiting(false);
-                    myAlert("success", "รหัสผ่านได้ถถูกรีเซ็ทแล้ว !");
-                } else {
-                    sw_Alert('error', 'รีเซ็ทรหัสผ่าน ไม่สำเร็จ', 'ระบบขัดข้อง โปรดลองใหม่ในภายหลัง');
-                }
+          waiting();
+          $.ajax({
+            url: urlUser,
+            type: 'GET',
+            crossDomain: true,
+            data: { opt_k: 'resetpass', opt_id:id_user_sel },
+            success: function (result) {
+              waiting(false);
+              if(result == "success"){
+                waiting(false);
+                myAlert("success", "รหัสผ่านได้ถถูกรีเซ็ทแล้ว !");
+              }else{
+                sw_Alert('error', 'รีเซ็ทรหัสผ่าน ไม่สำเร็จ', 'ระบบขัดข้อง โปรดลองใหม่ในภายหลัง');
+              }          
+            },
+            error: function (err) {
+                console.log("Reset password ERROR : " + err);
             }
-
-        } else if (result.dismiss === Swal.DismissReason.cancel) {
+          });
+        }else if (result.dismiss === Swal.DismissReason.cancel) {
             /*swalWithBootstrapButtons.fire(
                 'ยกเลิก',
                 'ข้อมูลของคุณยังไม่ถูกลบ :)',

@@ -72,21 +72,28 @@ $(document).on("submit", "#change_pass_mainform", function () {  //===== ตก�
     const pass_new2 = my_form.find("#new_pass2").val();
     if (pass_new1 === pass_new2) {
         const dt_modi = dateNow('dmy');
-        let fm_val = [user.id, pass_old, pass_new1, dt_modi];
-
         waiting();
-        google.script.run.withSuccessHandler(fn_ch_pass).changePass(fm_val);
-        function fn_ch_pass(result) {
-            waiting(false);
-            if (result == 'success') {
-                myAlert("success", "เปลี่ยนรหัสผ่าน สำเร็จ");
-                document.getElementById('main_changepass').style.display = 'none';
-            } else if (result == "passwrong") {
-                sw_Alert('error', 'เปลี่ยนรหัสผ่านไม่สำเร็จ', 'รหัสผ่านเดิมไม่ถูกต้อง');
-            } else {
-                sw_Alert('error', 'เปลี่ยนรหัสผ่านไม่สำเร็จ', 'ระบบขัดข้อง โปรดลองใหม่ในภายหลัง');
+        $.ajax({
+            url: urlUser,
+            type: 'GET',
+            crossDomain: true,
+            data: { opt_k: 'changepass', opt_id: user.id, opt_pw: pass_old, opt_pw2: pass_new1, opt_dt: dt_modi },
+            success: function (result) {
+                waiting(false);
+                console.log(result);
+                if (result == "success") {
+                    myAlert("success", "เปลี่ยนรหัสผ่าน สำเร็จ");
+                    document.getElementById('main_changepass').style.display = 'none';
+                } else if (result == "passwrong") {
+                    sw_Alert('error', 'เปลี่ยนรหัสผ่านไม่สำเร็จ', 'รหัสผ่านเดิมไม่ถูกต้อง');
+                } else {                    
+                    sw_Alert('error', 'เปลี่ยนรหัสผ่านไม่สำเร็จ', 'ระบบขัดข้อง โปรดลองใหม่ในภายหลัง');
+                }
+            },
+            error: function (err) {
+                console.log("Reset password ERROR : " + err);
             }
-        }
+        });
 
     } else {
         sw_Alert('warning', 'รหัสผ่านไม่ตรงกัน', 'กรุณาระบุรหัสผ่านใหม่ให้ตรงกันทั้งสองครั้ง');
