@@ -419,21 +419,22 @@ $(document).on("change", "#upload_picUser", function (e) {
         var canvas = document.createElement('canvas'),
           ctx_s = canvas.getContext("2d");
         const width = 250;
-        if (img.width < img.height) {
+        const height = 250;
+        if (img.width < img.height) { // สูง
           var co = {
             co_w: img.width,
             co_h: img.width,
             co_x: 0,
             co_y: Math.floor((img.height - img.width) / 2)
           }
-        } else if (img.width > img.height) {
+        } else if (img.width > img.height) { // กว้าง
           var co = {
             co_w: img.height,
             co_h: img.height,
             co_x: Math.floor((img.width - img.height) / 2),
             co_y: 0
           }
-        } else {
+        } else { // ด้านเท่ากัน
           var co = {
             co_w: img.height,
             co_h: img.width,
@@ -445,8 +446,8 @@ $(document).on("change", "#upload_picUser", function (e) {
         c.height = co.co_h;
         ctx.drawImage(img, co.co_x, co.co_y, co.co_w, co.co_h, 0, 0, co.co_w, co.co_h);
         canvas.width = width;
-        canvas.height = width;
-        ctx_s.drawImage(c, 0, 0, width, width);
+        canvas.height = height;
+        ctx_s.drawImage(c, 0, 0, width, height);
         var dataurl = canvas.toDataURL(imageFile.type);
         //document.getElementById("preview").src = dataurl;
         const vals = dataurl.split(',')[1];
@@ -470,7 +471,7 @@ $(document).on("change", "#upload_picUser", function (e) {
           }).then(function (data) {
             let res = JSON.parse(data);
             if (res.result == "success") {
-              const fullIdPic = linkUserPic(res.id);
+              const fullIdPic = linkPic(res.id,pic_noAvatar);
               document.getElementById("picuser").src = fullIdPic;
               $("#url_PicUser").val(fullIdPic);
             } else {

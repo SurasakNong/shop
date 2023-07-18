@@ -53,10 +53,13 @@ function show_branch_table(per, p) { //======================== แสดงต�
     waiting();
     var strSearch = document.getElementById('search_branch').value;
     var n = ((p - 1) * per);
-    let my_val = [strSearch, per, p];
-    google.script.run.withSuccessHandler(fn_show_branch).rd_branch(my_val);
-    function fn_show_branch(result) {
-        const myArr = JSON.parse(result);
+    $.ajax({
+      url: urlBranch,
+      type: 'GET',
+      crossDomain: true,
+      data: { opt_k: 'read', opt_sh: strSearch, opt_pe: per, opt_p: p },
+      success: function (result) {
+        const myArr = JSON.parse(JSON.stringify(result));
         let page_all = myArr[myArr.length - 1].page;
         let rec_all = myArr[myArr.length - 1].rec;
         page_selected = (p >= page_all) ? page_all : p;
@@ -88,8 +91,7 @@ function show_branch_table(per, p) { //======================== แสดงต�
           <div class="col-sm-3 mb-2" style="font-size: 0.8rem; text-align:right;">
             <label id="record"></label>
           </div>
-        </div> 
-        
+        </div>         
         `;
         $("#table_branch").html(tt);
         document.getElementById("rowShow_branch").value = rowperpage.toString();
@@ -100,8 +102,11 @@ function show_branch_table(per, p) { //======================== แสดงต�
         }
         pagination_show(p, page_all, rowperpage, 'show_branch_table'); //<<<<<<<< แสดงตัวจัดการหน้าข้อมูล Pagination    
         waiting(false);
-
-    }
+      },
+      error: function (err) {
+        console.log("The server  ERROR says: " + err);
+      }
+    });
 }
 
 $(document).on("change", "#rowShow_branch", function () { //========== เปลี่ยนค่าจำนวนแถวที่แสดงในตาราง
@@ -144,7 +149,8 @@ function lst_branch_tb(ob, i_no) {  //========== ฟังก์ชั่นเ�
     col[n_col - 1].style = "text-align: center;";
 }
 
-function showBranchAdd() {  //========================= แสดงหน้าเพิ่มสาขา
+$(document).on("click", "#bt_add_branch", function () { //========== เปิดเพิ่มสาขา
+    $("#table_branch").html("");
     var html = `     
     <div id="branch_add">    
       <form class="animate__animated animate__fadeIn" id="add_branch_form" style="padding:20px;">
@@ -200,11 +206,6 @@ function showBranchAdd() {  //========================= แสดงหน้า
     </div>  
     `;
     $("#add_branch").html(html);
-}
-
-$(document).on("click", "#bt_add_branch", function () { //========== เปิดเพิ่มสาขา
-    $("#table_branch").html("");
-    showBranchAdd();
 });
 
 $(document).on("click", "#cancel_add_branch", function () { //========== ยกเลิกการเพิ่มสาขา
@@ -220,31 +221,38 @@ $(document).on("submit", "#add_branch_form", function () {  //===== ตกลง
     const tel_br = my_form.find("#tel_branch").val();
     const tax_br = my_form.find("#tax_branch").val();
     const email_br = my_form.find("#email_branch").val();
-    const code_qr = my_form.find("#code_qr").val();
-    const urlLogo_br = '';
-    const urlQrcode_br = '';
-    let fm_val = [name_br, name_bu, add_br, tel_br, email_br, tax_br, urlLogo_br, urlQrcode_br, code_qr];
+    const code_ln = my_form.find("#code_qr").val();
+    const urlLogo_br = pic_noLogo;
+    const urlQrcode_br = pic_noQrcode;    
+
     waiting();
-    google.script.run.withSuccessHandler(fn_add_branch).add_branch(fm_val);
-    function fn_add_branch(result) {
+    $.ajax({
+      url: urlBranch,
+      type: 'GET',
+      crossDomain: true,
+      data: { opt_k: 'add', opt_nmbr:name_br, opt_nmbbr:name_bu, opt_addbr:add_br, opt_embr:email_br, opt_tlbr:tel_br, opt_tx:tax_br,
+       opt_urlbr:urlLogo_br, opt_qrbr:urlQrcode_br, opt_ln:code_ln },
+      success: function (result) {
         waiting(false);
-        if (result == 'success') {
-            myAlert("success", "เพิ่มสาขา สำเร็จ");
-            $("#add_branch").html("");
-            show_branch_table(rowperpage, page_selected);
-        } else if (result == "exits") {
-            sw_Alert('error', 'เพิ่มข้อมูล ไม่สำเร็จ', name_br + ' ซ้ำ! มีการใช้ชื่อนี้แล้ว');
-        } else {
-            sw_Alert('error', 'เพิ่มข้อมูล ไม่สำเร็จ', 'ระบบขัดข้อง โปรดลองใหม่ในภายหลัง');
-        }
-    }
+        if(result == "success"){
+          myAlert("success", "เพิ่มข้อมูลสาขา สำเร็จ");
+          $("#add_branch").html("");
+          show_branch_table(rowperpage, page_selected);
+        }else if(result == "exits"){
+          sw_Alert('error', 'เพิ่มข้อมูล ไม่สำเร็จ', name_br + ' ซ้ำ! มีการใช้ชื่อนี้แล้ว');
+        }else{
+          sw_Alert('error', 'เพิ่มข้อมูล ไม่สำเร็จ', 'ระบบขัดข้อง โปรดลองใหม่ในภายหลัง');
+        }          
+      },
+      error: function (err) {
+          console.log("Add new branch ERROR : " + err);
+      }
+    });
     return false;
 });
 
 function delete_branch_Row(id) { //================================ ลบข้อมูลสาขา
-    var fm_val = [id];
     var br_name = document.getElementById('name_b' + id).innerHTML;
-
     const swalWithBootstrapButtons = Swal.mixin({
         customClass: {
             confirmButton: 'mybtn btnOk',
@@ -263,15 +271,24 @@ function delete_branch_Row(id) { //================================ ลบข้
     }).then((result) => {
         if (result.isConfirmed) {
             waiting();
-            google.script.run.withSuccessHandler(fn_delete_branch).del_branch(fm_val);
-            function fn_delete_branch(result) {
-                if (result == true) {
-                    myAlert("success", "ข้อมูลถูกลบแล้ว !");
-                    show_branch_table(rowperpage, page_selected);
-                } else {
-                    sw_Alert('error', 'ลบข้อมูล ไม่สำเร็จ', 'ระบบขัดข้อง โปรดลองใหม่ในภายหลัง');
-                }
-            }
+            $.ajax({
+              url: urlBranch,
+              type: 'GET',
+              crossDomain: true,
+              data: { opt_k:'del', opt_id:id },
+              success: function (result) {
+                waiting(false);
+                if(result == "success"){
+                  myAlert("success", "ข้อมูลถูกลบแล้ว !");
+                  show_branch_table(rowperpage, page_selected);
+                }else{
+                  sw_Alert('error', 'ลบข้อมูล ไม่สำเร็จ', 'ระบบขัดข้อง โปรดลองใหม่ในภายหลัง');
+                }          
+              },
+              error: function (err) {
+                  console.log("Delete branch ERROR : " + err);
+              }
+            });   
 
         } else if (result.dismiss === Swal.DismissReason.cancel) {
             /*swalWithBootstrapButtons.fire(
@@ -369,151 +386,123 @@ $(document).on("click", "#cancel_edit_branch", function () { //========== ยก
 
 
 $(document).on("change", "#upload_picLogo", function (e) {
-    if (e.target.files) {
-        var n_file = 'LG-' + document.getElementById('id_branch').value + '-' + document.getElementById('name_branch').value;
-        var idBranch = document.getElementById('id_branch').value;
-        let imageFile = e.target.files[0];
-        var reader = new FileReader();
-        reader.onload = function (e) {
-            var img = document.createElement("img");
-
-            img.onload = function (event) {
-                waiting();
-                var canvas = document.createElement('canvas'),
-                    ctx = canvas.getContext("2d"),
-                    oc = document.createElement('canvas'),
-                    octx = oc.getContext('2d');
-                var width = 250; //====== destination canvas size
-                const img_quality = 1; //(0.1-1.0) ระดับคุณภาพ
-                canvas.width = width;
-                canvas.height = canvas.width * img.height / img.width;
-                var cur = {
-                    width: Math.floor(img.width * img_quality),
-                    height: Math.floor(img.height * img_quality)
-                }
-                oc.width = cur.width;
-                oc.height = cur.height;
-                octx.drawImage(img, 0, 0, cur.width, cur.height);
-                while (cur.width * img_quality > width) {
-                    cur = {
-                        width: Math.floor(cur.width * img_quality),
-                        height: Math.floor(cur.height * img_quality)
-                    };
-                    octx.drawImage(oc, 0, 0, cur.width * 2, cur.height * 2, 0, 0, cur.width, cur.height);
-                }
-                ctx.drawImage(oc, 0, 0, cur.width, cur.height, 0, 0, canvas.width, canvas.height);
-
-                var dataurl = canvas.toDataURL(imageFile.type);
-                const vals = dataurl.split(',');
-                const obj = {
-                    id: idBranch,
-                    fName: n_file,
-                    fileName: imageFile.name,
-                    mineType: imageFile.type,
-                    data: vals[1]
-                }
-                google.script.run.withSuccessHandler(upBranchResult).uploadPicBranch(obj);
-            }
-            img.src = e.target.result;
+  if (e.target.files) {
+    var n_file = 'LG-' + document.getElementById('id_branch').value + '-' + document.getElementById('name_branch').value;
+    var idBranch = document.getElementById('id_branch').value;
+    let imageFile = e.target.files[0];
+    var reader = new FileReader();
+    reader.onload = function (e) {
+      var img = document.createElement("img");
+      img.onload = function (event) {
+        waiting();
+        var c = document.createElement('canvas'),
+          ctx = c.getContext("2d");
+        var canvas = document.createElement('canvas'),
+          ctx_s = canvas.getContext("2d");
+        var width = 250;
+        var height = width * img.height / img.width;        
+        canvas.width = width;
+        canvas.height = height;
+        ctx_s.drawImage(img, 0, 0, width, height);
+        var dataurl = canvas.toDataURL(imageFile.type);
+        //document.getElementById("preview").src = dataurl;
+        const vals = dataurl.split(',')[1];
+        var urlPicBranch = document.getElementById('br_logo').value;
+        var id_pic_del = (urlPicBranch.includes("id=")) ? urlPicBranch.split('id=')[1] : '';
+        const obj = {
+          opt_k: "upBranchLogo",
+          idBranch: idBranch,
+          fName: n_file,
+          fileId: id_pic_del,
+          fileName: imageFile.name,
+          mimeType: imageFile.type,
+          fdata: vals
         }
-        reader.readAsDataURL(imageFile);
+        fetch(urlBranch, {
+          method: "POST",
+          body: JSON.stringify(obj)
+        })
+          .then(function (response) {
+            return response.text()
+          }).then(function (data) {
+            let res = JSON.parse(data);
+            if (res.result == "success") {
+              const fullIdPic = linkPic(res.id, pic_noLogo);
+              document.getElementById("brLogo").src = fullIdPic;
+              $("#br_logo").val(fullIdPic);
+            } else {
+              console.log("Upload Logo Branch ERROR : " + res.result);
+            }
+            waiting(false);
+          });
+
+
+      }
+      img.src = e.target.result;
     }
+    reader.readAsDataURL(imageFile);
+  }
 });
-
-function upBranchResult(val) {
-    var id_pic = val.url.split('/d/')[1].split('/view')[0];
-    var fullIdPic = 'https://drive.google.com/uc?id=' + id_pic;
-    var urlPicBranch = document.getElementById('br_logo').value;
-    if (urlPicBranch !== pic_noLogo) {
-        var id_pic_del = urlPicBranch.split('id=')[1];
-        google.script.run.withSuccessHandler(del_br_result).trashIt(id_pic_del);
-    }
-    document.getElementById("brLogo").src = fullIdPic;
-    $("#br_logo").val(fullIdPic);
-    waiting(false);
-}
-
-function del_br_result(val) {
-    if (val) {
-        console.log("Delete Logo Branch picture success.");
-    } else {
-        console.log("Delete Logo Branch picture not success!");
-    }
-}
 
 $(document).on("change", "#upload_picQr", function (e) {
-    if (e.target.files) {
-        var n_file = 'QR-' + document.getElementById('id_branch').value + '-' + document.getElementById('name_branch').value;
-        var idBranch = document.getElementById('id_branch').value;
-        let imageFile = e.target.files[0];
-        var reader = new FileReader();
-        reader.onload = function (e) {
-            var img = document.createElement("img");
+  if (e.target.files) {
+    var n_file = 'QR-' + document.getElementById('id_branch').value + '-' + document.getElementById('name_branch').value;
+    var idBranch = document.getElementById('id_branch').value;
+    let imageFile = e.target.files[0];
+    var reader = new FileReader();
+    reader.onload = function (e) {
+      var img = document.createElement("img");
 
-            img.onload = function (event) {
-                waiting();
-                var canvas = document.createElement('canvas'),
-                    ctx = canvas.getContext("2d"),
-                    oc = document.createElement('canvas'),
-                    octx = oc.getContext('2d');
-                const width = 250; //====== destination canvas size
-                const img_quality = 1; //(0.1-1.0) ระดับคุณภาพ
-                canvas.width = width;
-                canvas.height = canvas.width * img.height / img.width;
-                var cur = {
-                    width: Math.floor(img.width * img_quality),
-                    height: Math.floor(img.height * img_quality)
-                }
-                oc.width = cur.width;
-                oc.height = cur.height;
-                octx.drawImage(img, 0, 0, cur.width, cur.height);
-                while (cur.width * img_quality > width) {
-                    cur = {
-                        width: Math.floor(cur.width * img_quality),
-                        height: Math.floor(cur.height * img_quality)
-                    };
-                    octx.drawImage(oc, 0, 0, cur.width * 2, cur.height * 2, 0, 0, cur.width, cur.height);
-                }
-                ctx.drawImage(oc, 0, 0, cur.width, cur.height, 0, 0, canvas.width, canvas.height);
+      img.onload = function (event) {
+        waiting();
 
-                var dataurl = canvas.toDataURL(imageFile.type);
-                const vals = dataurl.split(',');
-                const obj = {
-                    id: idBranch,
-                    fName: n_file,
-                    fileName: imageFile.name,
-                    mineType: imageFile.type,
-                    data: vals[1]
-                }
-                google.script.run.withSuccessHandler(upQrResult).uploadPicQR(obj);
-            }
-            img.src = e.target.result;
+        var c = document.createElement('canvas'),
+          ctx = c.getContext("2d");
+        var canvas = document.createElement('canvas'),
+          ctx_s = canvas.getContext("2d");
+        var width = 250;
+        var height = width * img.height / img.width;
+        canvas.width = width;
+        canvas.height = height;
+        ctx_s.drawImage(img, 0, 0, width, height);
+        var dataurl = canvas.toDataURL(imageFile.type);
+        //document.getElementById("preview").src = dataurl;
+
+        const vals = dataurl.split(',')[1];
+        var urlQrBranch = document.getElementById('br_qrcode').value;
+        var id_pic_del = (urlQrBranch.includes("id=")) ? urlQrBranch.split('id=')[1] : '';
+        const obj = {
+          opt_k: "upBranchQr",
+          idBranch: idBranch,
+          fName: n_file,
+          fileId: id_pic_del,
+          fileName: imageFile.name,
+          mimeType: imageFile.type,
+          fdata: vals
         }
-        reader.readAsDataURL(imageFile);
+        fetch(urlBranch, {
+          method: "POST",
+          body: JSON.stringify(obj)
+        })
+          .then(function (response) {
+            return response.text()
+          }).then(function (data) {
+            let res = JSON.parse(data);
+            if (res.result == "success") {
+              const fullIdPic = linkPic(res.id, pic_noQrcode);
+              document.getElementById("brqr").src = fullIdPic;
+              $("#br_qrcode").val(fullIdPic);
+            } else {
+              console.log("Upload QRcode Branch ERROR : " + res.result);
+            }
+            waiting(false);
+          });
+      }
+      img.src = e.target.result;
     }
+    reader.readAsDataURL(imageFile);
+  }
 });
-
-function upQrResult(val) {
-    var id_pic = val.url.split('/d/')[1].split('/view')[0];
-    var fullIdPic = 'https://drive.google.com/uc?id=' + id_pic;
-    var urlPicQr = document.getElementById('br_qrcode').value;
-    if (urlPicQr !== pic_noQrcode) {
-        var id_pic_del = urlPicQr.split('id=')[1];
-        google.script.run.withSuccessHandler(del_qr_result).trashIt(id_pic_del);
-    }
-    document.getElementById("brqr").src = fullIdPic;
-    $("#br_qrcode").val(fullIdPic);
-    waiting(false);
-}
-
-function del_qr_result(val) {
-    if (val) {
-        console.log("Delete QRcode Branch picture success.");
-    } else {
-        console.log("Delete Qrcode Branch picture not success!");
-    }
-}
-
 
 function edit_branch_Row(id) { //================================ เปิดหน้าแก้ไขข้อมูลสาขา
     showBranchEdit();
@@ -527,11 +516,11 @@ function edit_branch_Row(id) { //================================ เปิด�
     $("#address_branch").val(document.getElementById('add_b' + id).innerHTML);
     $("#tel_branch").val(document.getElementById('tel_b' + id).innerHTML);
     $("#email_branch").val(document.getElementById('email_b' + id).innerHTML);
-    $("#tax_branch").val(document.getElementById('tax_b' + id).innerHTML);
-    $("#code_qr").val(dataGetbyId_val('qrcode_code' + id));
+    $("#tax_branch").val(document.getElementById('tax_b' + id).innerHTML);  
+
     $("#br_logo").val(pic_logo);
     $("#br_qrcode").val(pic_qr);
-
+    $("#code_qr").val(document.getElementById('qrcode_code' + id).value);
     $("#table_branch").html("");
 }
 
@@ -543,24 +532,33 @@ $(document).on("submit", "#edit_branch_form", function () {  //===== ตกล�
     const add_br = my_form.find("#address_branch").val();
     const tel_br = my_form.find("#tel_branch").val();
     const email_br = my_form.find("#email_branch").val();
-    const tax_br = my_form.find("#tax_branch").val();
-    const code_qr = my_form.find("#code_qr").val();
+    const tax_br = my_form.find("#tax_branch").val();   
     const logo_br = my_form.find("#br_logo").val();
     const qr_br = my_form.find("#br_qrcode").val();
-    let fm_val = [id_br, name_br, name2_br, add_br, tel_br, email_br, tax_br, logo_br, qr_br, code_qr];
+    const code_qr = my_form.find("#code_qr").val();
     waiting();
-    google.script.run.withSuccessHandler(fn_edit_branch).edit_branch(fm_val);
-    function fn_edit_branch(result) {
+    $.ajax({
+      url: urlBranch,
+      type: 'GET',
+      crossDomain: true,
+      data: { opt_k: 'edit', opt_id:id_br, opt_nmbr:name_br, opt_nmbbr:name2_br, opt_addbr:add_br, 
+      opt_tlbr:tel_br, opt_embr:email_br, opt_tx:tax_br, opt_urlbr:logo_br, opt_qrbr:qr_br, opt_ln:code_qr },
+      success: function (result) {
         waiting(false);
-        if (result == "success") {
-            myAlert("success", "แก้ไขข้อมูล สำเร็จ");
-            $("#edit_branch").html("");
-            show_branch_table(rowperpage, page_selected);
-        } else if (result == "exits") {
+        if(result == "success"){
+          waiting(false);
+          myAlert("success", "แก้ไขข้อมูล สำเร็จ");
+          $("#edit_branch").html("");
+          show_branch_table(rowperpage, page_selected);
+        }else if (result == "exits") {
             sw_Alert('warning', 'แก้ไขข้อมูล ไม่สำเร็จ', name_br + ' ซ้ำ! กรุณาเปลี่ยนใหม่');
-        } else {
+        }else {
             sw_Alert('error', 'แก้ไขข้อมูล ไม่สำเร็จ', 'ระบบขัดข้อง โปรดลองใหม่ในภายหลัง');
-        }
-    }
+        }          
+      },
+      error: function (err) {
+          console.log("Edit user ERROR : " + err);
+      }
+    });
     return false;
 }); 

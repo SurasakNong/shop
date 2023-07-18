@@ -1,4 +1,5 @@
 function showHome() {    
+    waiting(false);
     $("#mainpage").show();
     document.getElementById('titleName').innerHTML = branch.bname;
     document.getElementById('titleName').setAttribute('title', branch.name);

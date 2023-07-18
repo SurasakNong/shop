@@ -4,7 +4,7 @@ function showLoginPage() {
     $("#loginpage").show();
     let html = `          
           <div class="container"> 
-          <div class="logoname mt-3 mb-4 animate__animated animate__bounce noselect">Welcome Login</div>
+          <div class="logoname mt-3 mb-5 animate__animated animate__bounce noselect">Welcome Login</div>
             <form class="form-signin animate__animated animate__fadeIn" id='login_form'>          
               <!-- <img class="mb-3" src="https://drive.google.com/uc?id=12dc3IbYT8YEKyu8UecAd6vmjTJC1VVAr" alt="Logo" width="120" height="70"> 
               <p class="glow mb-3">Welcome</p> -->
@@ -54,6 +54,7 @@ $(document).on("submit", "#login_form", function () {
                 Object.assign(branch, {
                     id: obj.brId * 1,
                     bname: obj.brName2,
+                    name: obj.brName,
                     add: obj.brAdd,
                     tel: obj.brTel,
                     email: obj.brEmail,
@@ -62,7 +63,6 @@ $(document).on("submit", "#login_form", function () {
                     qr: obj.brQr == "" || obj.brQr == "undefined" ? pic_noQrcode : obj.brQr,
                     line: obj.brLine
                 });
-
                 $("#loginpage").hide();
                 showHome();
             } else {

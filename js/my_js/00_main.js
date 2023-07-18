@@ -1,4 +1,4 @@
-$(document).ready(function () {
+$(document).ready(function () {   
     setMainMenu();
     $("#mainpage").hide();
     showLoginPage();
@@ -122,8 +122,6 @@ $(document).on("click", "#bt_back", function () {
 });
 
 
-
-
 function waiting(order = true) {
     if (order) {
         $(".myWaiting").show();
@@ -224,10 +222,10 @@ function dynamicSort(property) { //เรียงข้อมูล myArr = JSO
     }
 }
 
-function linkUserPic(id){
+function linkPic(id,pic){
     var lk = '';
     if(id === '' || id === null || id === undefined){
-        lk = pic_noAvatar;
+        lk = pic;
     }else{
         lk = 'https://drive.google.com/uc?id=' + id;
     }
