@@ -8,7 +8,7 @@
 }
 
 :root {
-  --bg: #FFFAFA;
+  --bg: #ffffff;
   --logoName: #884A39;
   --bgMainMenu: #9BCDD2; 
   --btnOk: #9BCDD2;
@@ -586,7 +586,7 @@ margin: 0 2px;
 .pagination a.active {
 background-color:var(--bgMainMenu);;
 color: #ffffff;
-border: 1px solid #ffffff;
+border: 1px solid #75f321;
 content: none;
 }
 

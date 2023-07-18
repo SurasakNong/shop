@@ -96,7 +96,7 @@ function showusertable(per, p) { //======================== แสดงตา�
         `;
       $("#table_user").html(tt);
       document.getElementById("rowShow_user").value = rowperpage.toString();
-      document.getElementById("record").innerHTML = "ทั้งหมด : " + rec_all + " ข้อมูล";
+      document.getElementById("record").innerHTML = "ทั้งหมด : " + rec_all + " รายการ";
       for (let i = 0; i < myArr.length - 1; i++) {
         n++;
         listuserTable(myArr[i], n);
@@ -111,7 +111,7 @@ function showusertable(per, p) { //======================== แสดงตา�
 }
 
 $(document).on("change", "#rowShow_user", function () { //========== เปลี่ยนค่าจำนวนแถวที่แสดงในตาราง
-    rowperpage = $("#rowShow_user").val() * 1;
+    rowperpage = +$("#rowShow_user").val();
     showusertable(rowperpage, 1);
 });
 
@@ -404,76 +404,109 @@ $(document).on("click", "#cancel_edit_user", function () { //========== ยก�
 });
 
 $(document).on("change", "#upload_picUser", function (e) {
-    if (e.target.files) {
-        var n_file = document.getElementById('id_user').value + '-' + document.getElementById('userName').value;
-        var idUser = document.getElementById('id_user').value;
-        let imageFile = e.target.files[0];
-        var reader = new FileReader();
-        reader.onload = function (e) {
-            var img = document.createElement("img");
-
-            img.onload = function (event) {
-                waiting();
-                var canvas = document.createElement('canvas'),
-                    ctx = canvas.getContext("2d"),
-                    oc = document.createElement('canvas'),
-                    octx = oc.getContext('2d');
-                var width = 250; //====== destination canvas size
-                canvas.width = width;
-                canvas.height = canvas.width * img.height / img.width;
-                var cur = {
-                    width: Math.floor(img.width * 0.5),
-                    height: Math.floor(img.height * 0.5)
-                }
-                oc.width = cur.width;
-                oc.height = cur.height;
-                octx.drawImage(img, 0, 0, cur.width, cur.height);
-                while (cur.width * 0.5 > width) {
-                    cur = {
-                        width: Math.floor(cur.width * 0.5),
-                        height: Math.floor(cur.height * 0.5)
-                    };
-                    octx.drawImage(oc, 0, 0, cur.width * 2, cur.height * 2, 0, 0, cur.width, cur.height);
-                }
-                ctx.drawImage(oc, 0, 0, cur.width, cur.height, 0, 0, canvas.width, canvas.height);
-
-                var dataurl = canvas.toDataURL(imageFile.type);
-                //document.getElementById("preview").src = dataurl;
-                const vals = dataurl.split(',');
-                const obj = {
-                    idUser: idUser,
-                    fName: n_file,
-                    fileName: imageFile.name,
-                    mineType: imageFile.type,
-                    data: vals[1]
-                }
-                google.script.run.withSuccessHandler(upUserResult).uploadPicUser(obj);
-            }
-            img.src = e.target.result;
+  if (e.target.files) {
+    waiting();
+    var n_file = document.getElementById('id_user').value + '-' + document.getElementById('userName').value;
+    var idUser = document.getElementById('id_user').value;
+    let imageFile = e.target.files[0];
+    var reader = new FileReader();
+    reader.onload = function (e) {
+      var img = document.createElement("img");
+      img.onload = function (event) {
+        waiting();
+        var c = document.createElement('canvas'),
+          ctx = c.getContext("2d");
+        var canvas = document.createElement('canvas'),
+          ctx_s = canvas.getContext("2d");
+        const width = 250;
+        if (img.width < img.height) {
+          var co = {
+            co_w: img.width,
+            co_h: img.width,
+            co_x: 0,
+            co_y: Math.floor((img.height - img.width) / 2)
+          }
+        } else if (img.width > img.height) {
+          var co = {
+            co_w: img.height,
+            co_h: img.height,
+            co_x: Math.floor((img.width - img.height) / 2),
+            co_y: 0
+          }
+        } else {
+          var co = {
+            co_w: img.height,
+            co_h: img.width,
+            co_x: 0,
+            co_y: 0
+          }
         }
-        reader.readAsDataURL(imageFile);
+        c.width = co.co_w;
+        c.height = co.co_h;
+        ctx.drawImage(img, co.co_x, co.co_y, co.co_w, co.co_h, 0, 0, co.co_w, co.co_h);
+        canvas.width = width;
+        canvas.height = width;
+        ctx_s.drawImage(c, 0, 0, width, width);
+        var dataurl = canvas.toDataURL(imageFile.type);
+        //document.getElementById("preview").src = dataurl;
+        const vals = dataurl.split(',')[1];
+        var urlPicUser = document.getElementById('url_PicUser').value;
+        var id_pic_del = (urlPicUser.includes("id=")) ? urlPicUser.split('id=')[1] : '';
+        const obj = {
+          opt_k: "upUserPic",
+          idUser: idUser,
+          fName: n_file,
+          fileId: id_pic_del,
+          fileName: imageFile.name,
+          mimeType: imageFile.type,
+          fdata: vals
+        }
+        fetch(urlUser, {
+          method: "POST",
+          body: JSON.stringify(obj)
+        })
+          .then(function (response) {
+            return response.text()
+          }).then(function (data) {
+            let res = JSON.parse(data);
+            if (res.result == "success") {
+              const fullIdPic = linkUserPic(res.id);
+              document.getElementById("picuser").src = fullIdPic;
+              $("#url_PicUser").val(fullIdPic);
+            } else {
+              console.log("Upload picture user ERROR : " + res.result);
+            }
+            waiting(false);
+          });
+      }
+      img.src = e.target.result;
     }
+    reader.readAsDataURL(imageFile);
+  }
 });
 
-function upUserResult(val) {
-    var id_pic = val.url.split('/d/')[1].split('/view')[0];
-    var fullIdPic = 'https://drive.google.com/uc?id=' + id_pic;
-    var urlPicUser = document.getElementById('url_PicUser').value;
-    if (urlPicUser !== pic_noAvatar) {
-        var id_pic_del = urlPicUser.split('id=')[1];
-        google.script.run.withSuccessHandler(del_result).trashIt(id_pic_del);
-    }
-    document.getElementById("picuser").src = fullIdPic;
-    $("#url_PicUser").val(fullIdPic);
-    waiting(false);
-}
-
 function del_result(val) {
-    if (val) {
-        console.log("Delete user picture success.");
-    } else {
-        console.log("Delete user picture not success!");
+  $.ajax({
+    url: urlUser,
+    type: 'GET',
+    crossDomain: true,
+    data: {opt_delpic:"delUserPic",opt_idpic:val},
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
+    success: function (result) {
+      if (result) {
+          console.log("Delete user picture success.");
+      } else {
+          console.log("Delete user picture not success!");
+      }
+    },
+    error: function (err) {
+        console.log("Delete picture user ERROR : " + err);
     }
+  }); 
+
+
+    
 }
 
 $(document).on("submit", "#edit_user_form", function () {  //===== ตกลงเปลี่ยนข้อมูลผู้ใช้งาน  

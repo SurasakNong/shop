@@ -223,3 +223,13 @@ function dynamicSort(property) { //เรียงข้อมูล myArr = JSO
         return result * sortOrder;
     }
 }
+
+function linkUserPic(id){
+    var lk = '';
+    if(id === '' || id === null || id === undefined){
+        lk = pic_noAvatar;
+    }else{
+        lk = 'https://drive.google.com/uc?id=' + id;
+    }
+    return lk
+}
