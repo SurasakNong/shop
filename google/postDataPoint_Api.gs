@@ -191,21 +191,15 @@ function MD5( input, isShortMode ){ //=MD5("YourStringToHash")  or =MD5("YourStr
     return txtHash;    
 }
 
-function trashIt(fileId) { //ลบไฟล์รูปภาพใน Google Drive
-  var file;
-  var rep = false;
-  try {
-    file = DriveApp.getFileById(fileId);
-    rep = true;
-  }
-  catch (fileE) {
-    try {
-      file = DriveApp.getFolderById(fileId);
-    }
-    catch (folderE) {
-      throw folderE;
+function trashIt(id) {
+  var files = DriveApp.getFiles();
+  while (files.hasNext()) {
+    var file = files.next();
+    if (file.getId() == id) {
+      console.log(file.getName() + ' ' + file.getId());
+      file.setTrashed(true);
+      return true
     }
   }
-  file.setTrashed(true);
-  return rep;
+  return false
 }

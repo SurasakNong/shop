@@ -107,7 +107,7 @@ const doGet = (event = {}) => {
     const data_in = [`${opt_id}`, `${opt_nmbr}`, `${opt_nmbbr}`, `${opt_addbr}`, `${opt_tlbr}`, `${opt_embr}`, `${opt_tx}`,
     `${opt_urlbr}`, `${opt_qrbr}`, `${opt_ln}`];
     var values_all = ss.getSheetByName('branch');
-    var values = my_get_val("branch!A2:A");
+    var values = my_get_val("branch!A2:B");
     var result = "error";
     if (data_id_exits(data_in[0], 0, data_in[1], 1, 'branch!A2:B') > 0) {
       result = "exits";
@@ -115,8 +115,12 @@ const doGet = (event = {}) => {
       for (var i = 0; i < values.length; i++) {
         var row = values[i];
         if (row[0] == data_in[0]) {
+          if(row[1] != data_in[1]){
+            followEdit('user',9,row[1],data_in[1]);
+            followEdit('point',3,row[1],data_in[1]);
+          }
           var data_set = [[data_in[1], data_in[2], data_in[3], data_in[4], data_in[5], data_in[6], data_in[7], data_in[8], data_in[9]]];
-          values_all.getRange(i + 2, 2, 1, 9).setValues(data_set); //=== (startRow,startCol,numRow,numCol)
+          values_all.getRange(i + 2, 2, 1, 9).setValues(data_set); //=== (startRow,startCol,numRow,numCol)          
           result = "success";
         }
       }
@@ -144,7 +148,7 @@ function doPost(e) { //========================== POST =========================
       if (obj.fileId != '') {
         trashIt(obj.fileId);
       }
-      var fullIdPic = 'https://drive.google.com/uc?id=' + idPic;
+      var fullIdPic = 'https://drive.google.com/uc?export=view&id=' + idPic;
       var values_all = ss.getSheetByName('branch');
       var values = my_get_val("branch!A2:A");
       for (var i = 0; i < values.length; i++) {
@@ -176,7 +180,7 @@ function doPost(e) { //========================== POST =========================
       if (obj.fileId != '') {
         trashIt(obj.fileId);
       }
-      var fullIdPic = 'https://drive.google.com/uc?id=' + idPic;
+      var fullIdPic = 'https://drive.google.com/uc?export=view&id=' + idPic;
       var values_all = ss.getSheetByName('branch');
       var values = my_get_val("branch!A2:A");
       for (var i = 0; i < values.length; i++) {
@@ -222,7 +226,6 @@ function data_id_exits(id, id_col, data, data_col, range) { //ค้นหาค
   return result;
 }
 
-/*==============================================================================================*/
 function sortByCol(arr, colIndex, sortFn = 0) { //===== เรียงข้อมูล Array เลือก colum ได้
   if (sortFn === 0) {
     arr.sort(sortLessToMore);
@@ -278,21 +281,31 @@ function MD5(input, isShortMode) { // =MD5("YourStringToHash") or =MD5("YourStri
   return txtHash;
 }
 
-function trashIt(fileId) { //ลบไฟล์รูปภาพใน Google Drive
-  var file;
-  var rep = false;
-  try {
-    file = DriveApp.getFileById(fileId);
-    rep = true;
-  }
-  catch (fileE) {
-    try {
-      file = DriveApp.getFolderById(fileId);
-    }
-    catch (folderE) {
-      throw folderE;
+function trashIt(id) {
+  var files = DriveApp.getFiles();
+  while (files.hasNext()) {
+    var file = files.next();
+    if (file.getId() == id) {
+      console.log(file.getName() + ' ' + file.getId());
+      file.setTrashed(true);
+      return true
     }
   }
-  file.setTrashed(true);
-  return rep;
+  return false
+}
+
+function followEdit(tabName,col,searchTxt,newTxt){
+  var values_all = ss.getSheetByName(tabName);
+  col = +col;
+  const nCol = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U"];
+    var values = my_get_val(tabName+"!"+nCol[col]+"2:"+nCol[col]);
+    var result = false;
+      for (var i = 0; i < values.length; i++) {
+        var row = values[i];   
+        if (row[0] == searchTxt) {
+          values_all.getRange(i + 2, col+1, 1, 1).setValues([[newTxt]]); //=== (startRow,startCol,numRow,numCol)
+          result = true;
+        }
+      }
+  return result;
 }
