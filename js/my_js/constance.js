@@ -6,6 +6,7 @@ var ts_ok = 0;
 
 var urlUser = 'https://script.google.com/macros/s/AKfycbxT9hbNsM2mBd3ycq1IKlrJW18_KN7fntrKxiPPU6mVLdSzKVa9RFm7gmG93sSgXUOk/exec';
 var urlBranch = 'https://script.google.com/macros/s/AKfycbw22_oHNyfxNzMttw-uwlbCtT6QbT008lj62LVcJgRj18lFhczZdVE1kDD99sEERTOCjQ/exec';
+var urlPoint = 'https://script.google.com/macros/s/AKfycbyKqLuTACKcqBIHcRvGuL4wO45zoZZyodDcOTYmPTbT34pDcSvV-f_wX857SmfYhDu-rA/exec';
 var user = {
   id: 0,
   uname: 'Unknow',

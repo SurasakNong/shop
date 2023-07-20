@@ -223,8 +223,7 @@ $(document).on("submit", "#add_branch_form", function () {  //===== ตกลง
     const email_br = my_form.find("#email_branch").val();
     const code_ln = my_form.find("#code_qr").val();
     const urlLogo_br = pic_noLogo;
-    const urlQrcode_br = pic_noQrcode;    
-
+    const urlQrcode_br = pic_noQrcode;  
     waiting();
     $.ajax({
       url: urlBranch,

@@ -51,12 +51,13 @@ function show_point_table(per, p) { //======================== แสดงต�
     waiting();
     var strSearch = document.getElementById('search_point').value;
     var n = ((p - 1) * per);
-    let my_val = [strSearch, per, p];
-    google.script.run.withSuccessHandler(fn_show_point).rd_point(my_val);
-    function fn_show_point(result) {
-        const myArr = JSON.parse(result);
-        //myArr.sort(dynamicSort("desc"));
-        //console.log(myArr);
+    $.ajax({
+      url: urlPoint,
+      type: 'GET',
+      crossDomain: true,
+      data: { opt_k: 'read', opt_sh: strSearch, opt_pe: per, opt_p: p },
+      success: function (result) {
+        const myArr = JSON.parse(JSON.stringify(result));
         let page_all = myArr[myArr.length - 1].page;
         let rec_all = myArr[myArr.length - 1].rec;
         page_selected = (p >= page_all) ? page_all : p;
@@ -85,21 +86,22 @@ function show_point_table(per, p) { //======================== แสดงต�
           <div class="col-sm-3 mb-2" style="font-size: 0.8rem; text-align:right;">
             <label id="record"></label>
           </div>
-        </div> 
-        
+        </div>   
         `;
         $("#table_point").html(tt);
         document.getElementById("rowShow_point").value = rowperpage.toString();
         document.getElementById("record").innerHTML = "ทั้งหมด : " + rec_all + " ข้อมูล";
-
         for (let i = 0; i < myArr.length - 1; i++) {
             n++;
             lst_point_tb(myArr[i], n);
         }
         pagination_show(p, page_all, rowperpage, 'show_point_table'); //<<<<<<<< แสดงตัวจัดการหน้าข้อมูล Pagination    
         waiting(false);
-
-    }
+      },
+      error: function (err) {
+        console.log("The server  ERROR says: " + err);
+      }
+    });
 }
 
 $(document).on("change", "#rowShow_point", function () { //========== เปลี่ยนค่าจำนวนแถวที่แสดงในตาราง
@@ -173,7 +175,7 @@ function showPointAdd() {  //========================= แสดงหน้า�
     </div>  
     `;
     $("#add_point").html(html);
-    initDropdownList('selBranch', 'branch!A2:B');
+    initDropdownList('selBranch', 'branch!A2:B',0,1);
 }
 
 $(document).on("click", "#cancel_add_point", function () { //========== ยกเลิกการเพิ่มจุดบริการ
@@ -186,21 +188,28 @@ $(document).on("submit", "#add_point_form", function () {  //===== ตกลง�
     const name_p = my_form.find("#name_point").val();
     const desc_p = my_form.find("#desc_point").val();
     const sel_branch = document.getElementById("selBranch").options[document.getElementById("selBranch").selectedIndex].text;
-    let fm_val = [name_p, desc_p, sel_branch];
     waiting();
-    google.script.run.withSuccessHandler(fn_add_point).add_point(fm_val);
-    function fn_add_point(result) {
+    $.ajax({
+      url: urlPoint,
+      type: 'GET',
+      crossDomain: true,
+      data: { opt_k: 'add', opt_np:name_p, opt_dp:desc_p, opt_br:sel_branch },
+      success: function (result) {
         waiting(false);
-        if (result == 'success') {
-            myAlert("success", "เพิ่มจุดบริการ สำเร็จ");
-            $("#add_point").html("");
-            show_point_table(rowperpage, page_selected);
-        } else if (result == "exits") {
-            sw_Alert('error', 'เพิ่มข้อมูล ไม่สำเร็จ', name_p + ' ซ้ำ! มีการใช้ชื่อนี้แล้ว');
-        } else {
-            sw_Alert('error', 'เพิ่มข้อมูล ไม่สำเร็จ', 'ระบบขัดข้อง โปรดลองใหม่ในภายหลัง');
-        }
-    }
+        if(result == "success"){
+          myAlert("success", "เพิ่มจุดบริการ สำเร็จ");
+          $("#add_point").html("");
+          show_point_table(rowperpage, page_selected);
+        }else if(result == "exits"){
+          sw_Alert('error', 'เพิ่มข้อมูล ไม่สำเร็จ', name_p + ' ซ้ำ! มีการใช้ชื่อนี้แล้ว');
+        }else{
+          sw_Alert('error', 'เพิ่มข้อมูล ไม่สำเร็จ', 'ระบบขัดข้อง โปรดลองใหม่ในภายหลัง');
+        }          
+      },
+      error: function (err) {
+          console.log("Add new Point ERROR : " + err);
+      }
+    });
     return false;
 });
 
@@ -225,26 +234,35 @@ function delete_point_Row(id) { //================================ ลบข้�
         cancelButtonText: '&nbsp;&nbsp;ไม่&nbsp;&nbsp;',
         reverseButtons: false
     }).then((result) => {
-        if (result.isConfirmed) {
-            waiting();
-            google.script.run.withSuccessHandler(fn_delete_point).del_point(fm_val);
-            function fn_delete_point(result) {
-                if (result == true) {
-                    myAlert("success", "ข้อมูลถูกลบแล้ว !");
-                    show_point_table(rowperpage, page_selected);
-                } else {
-                    sw_Alert('error', 'ลบข้อมูล ไม่สำเร็จ', 'ระบบขัดข้อง โปรดลองใหม่ในภายหลัง');
-                }
+      if (result.isConfirmed) {
+          waiting();
+          $.ajax({
+            url: urlPoint,
+            type: 'GET',
+            crossDomain: true,
+            data: { opt_k:'del', opt_id:id },
+            success: function (result) {
+              waiting(false);
+              if(result == "success"){
+                myAlert("success", "ข้อมูลถูกลบแล้ว !");
+                show_point_table(rowperpage, page_selected);
+              }else{
+                sw_Alert('error', 'ลบข้อมูล ไม่สำเร็จ', 'ระบบขัดข้อง โปรดลองใหม่ในภายหลัง');
+              }          
+            },
+            error: function (err) {
+                console.log("Delete Point ERROR : " + err);
             }
+          });   
 
-        } else if (result.dismiss === Swal.DismissReason.cancel) {
-            /*swalWithBootstrapButtons.fire(
-                'ยกเลิก',
-                'ข้อมูลของคุณยังไม่ถูกลบ :)',
-                'error'
-            )*/
-        }
-    })
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+          /*swalWithBootstrapButtons.fire(
+              'ยกเลิก',
+              'ข้อมูลของคุณยังไม่ถูกลบ :)',
+              'error'
+          )*/
+      }
+  })
 }
 
 function showPointEdit() {  //========================= แสดงหน้าแก้ไขข้อมูลสาขา
@@ -293,7 +311,7 @@ $(document).on("click", "#cancel_edit_point", function () { //========== ยก�
 function edit_point_Row(id) { //================================ เปิดหน้าแก้ไขข้อมูล จุดบริการ
     showPointEdit();
     $("#id_point").val(id);
-    setDropdownList('selBranch', 'branch!A2:B', document.getElementById('branch_p' + id).innerHTML);
+    setDropdownList('selBranch', 'branch!A2:B', document.getElementById('branch_p' + id).innerHTML,0,1);
     $("#name_point").val(document.getElementById('name_p' + id).innerHTML);
     $("#desc_point").val(document.getElementById('desc_p' + id).innerHTML);
     $("#table_point").html("");
@@ -305,21 +323,28 @@ $(document).on("submit", "#edit_point_form", function () {  //===== ตกลง
     const name_p = my_form.find("#name_point").val();
     const desc_p = my_form.find("#desc_point").val();
     const sel_branch = document.getElementById("selBranch").options[document.getElementById("selBranch").selectedIndex].text;
-
-    let fm_val = [id_p, name_p, desc_p, sel_branch];
     waiting();
-    google.script.run.withSuccessHandler(fn_edit_point).edit_point(fm_val);
-    function fn_edit_point(result) {
+    $.ajax({
+      url: urlPoint,
+      type: 'GET',
+      crossDomain: true,
+      data: { opt_k: 'edit', opt_id:id_p, opt_np:name_p, opt_dp:desc_p, opt_br:sel_branch },
+      success: function (result) {
         waiting(false);
-        if (result == "success") {
-            myAlert("success", "แก้ไขข้อมูล สำเร็จ");
-            $("#edit_point").html("");
-            show_point_table(rowperpage, page_selected);
-        } else if (result == "exits") {
-            sw_Alert('warning', 'แก้ไขข้อมูล ไม่สำเร็จ', name_p + ' ชื่อนี้มีอยู่แล้ว กรุณาเปลี่ยนใหม่');
-        } else {
+        if(result == "success"){
+          waiting(false);
+          myAlert("success", "แก้ไขข้อมูล สำเร็จ");
+          $("#edit_point").html("");
+          show_point_table(rowperpage, page_selected);
+        }else if (result == "exits") {
+            sw_Alert('warning', 'แก้ไขข้อมูล ไม่สำเร็จ', name_p + ' ซ้ำ! กรุณาเปลี่ยนใหม่');
+        }else {
             sw_Alert('error', 'แก้ไขข้อมูล ไม่สำเร็จ', 'ระบบขัดข้อง โปรดลองใหม่ในภายหลัง');
-        }
-    }
+        }          
+      },
+      error: function (err) {
+          console.log("Edit Point ERROR : " + err);
+      }
+    });
     return false;
 }); 
