@@ -84,8 +84,8 @@ function tsToDate(ts, fn = "dmy") { //================= Timestamp to Date
           ("0" + (m.getMonth() + 1)).slice(-2) + "/" +
           m.getFullYear() + " " +
           ("0" + m.getHours()).slice(-2) + ":" +
-          ("0" + m.getMinutes()).slice(-2) + ":" +
-          ("0" + m.getSeconds()).slice(-2);
+          ("0" + m.getMinutes()).slice(-2);/* + ":" +
+          ("0" + m.getSeconds()).slice(-2);*/
   } else if (fn === "mdy") {  //==== 06/14/2023 22:24:49
       dateString =
           ("0" + (m.getMonth() + 1)).slice(-2) + "/" +

@@ -27,7 +27,7 @@ $(document).on("submit", "#login_form", function () {
     var username = document.getElementById("inputUsername").value;
     var pass = document.getElementById("inputPassword").value;
     //let ts_now = d_now.getTime(); //Time Stamp
-    let ts_now = dateNow("dmy");
+    let ts_now = dateNow();
 
     $.ajax({
         url: urlUser,

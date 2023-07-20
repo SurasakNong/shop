@@ -86,7 +86,7 @@ function showusertable(per, p) { //======================== แสดงตา�
           </thead>
           <tbody>
           </tbody>
-        </table>
+        </table> 
           <div class="row animate__animated animate__fadeIn">
             <div class="col-sm-3 mb-2" style="font-size: 0.8rem;">
               <label  for="rowShow_user">แถวแสดง:</label>
@@ -144,7 +144,7 @@ function listuserTable(ob, i_no) {  //========== ฟังก์ชั่นเ�
     col[3].innerHTML = `<div id="branch` + ob.id + `" class="text-left">` + ob.branch + `</div>`;
     col[4].innerHTML = `<div id="email` + ob.id + `" class="text-left">` + ob.email + `</div>`;
     col[5].innerHTML = `<div id="tel` + ob.id + `" class="text-left">` + ob.tel + `</div>`;
-    col[6].innerHTML = `<div id="dtlog` + ob.id + `" class="text-left">` + ob.dtlog + `</div>`;
+    col[6].innerHTML = `<div id="dtlog` + ob.id + `" class="text-left">` + tsToDate(+ob.dtlog) + `</div>`;
     col[n_col - 1].innerHTML = `
       <input type="hidden" id="id_user` + ob.id + `" value="` + ob.id + `" />
       <input type="hidden" id="u_name` + ob.id + `" value="` + ob.uname + `" />
@@ -248,7 +248,7 @@ $(document).on("submit", "#add_user_form", function () {  //===== ตกลง�
     const uName = my_form.find("#userName").val();
     const sel_branch = document.getElementById("selBranch").options[document.getElementById("selBranch").selectedIndex].text;
     const sel_pos = document.getElementById("selPos").options[document.getElementById("selPos").selectedIndex].text;
-    const dt_create = dateNow('dmy');
+    const dt_create = dateNow();
     waiting();
     $.ajax({
       url: urlUser,
@@ -511,10 +511,7 @@ function del_result(val) {
     error: function (err) {
         console.log("Delete picture user ERROR : " + err);
     }
-  }); 
-
-
-    
+  });     
 }
 
 $(document).on("submit", "#edit_user_form", function () {  //===== ตกลงเปลี่ยนข้อมูลผู้ใช้งาน  
@@ -527,7 +524,7 @@ $(document).on("submit", "#edit_user_form", function () {  //===== ตกลง�
     const sel_branch = document.getElementById("selBranch").options[document.getElementById("selBranch").selectedIndex].text;
     const sel_pos = document.getElementById("selPos").options[document.getElementById("selPos").selectedIndex].text;
     const userPic = my_form.find("#url_PicUser").val();
-    const dt_modi = dateNow('dmy');
+    const dt_modi = dateNow();
     waiting();
     $.ajax({
       url: urlUser,

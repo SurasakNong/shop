@@ -545,7 +545,7 @@ color:var(--logoName);
 }
 
 .list-table td{
-  font-size: 0.8rem; 
+  font-size: 0.75rem; 
   font-weight: 400;
   color:black; 
   border:none; 
