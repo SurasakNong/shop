@@ -1,6 +1,4 @@
-$(document).ready(function () {   
-    setMainMenu();
-    $("#mainpage").hide();
+$(document).ready(function () {        
     showLoginPage();
 });
 
@@ -227,7 +225,9 @@ function linkPic(id,pic){
     if(id === '' || id === null || id === undefined){
         lk = pic;
     }else{
-        lk = 'https://drive.google.com/uc?id=' + id;
+        //lk = 'https://drive.google.com/uc?id=' + id;
+        //lk = 'https://drive.google.com/uc?export=download&id=' + id; //for download
+        lk = 'https://drive.google.com/uc?export=view&id=' + id;
     }
     return lk
 }

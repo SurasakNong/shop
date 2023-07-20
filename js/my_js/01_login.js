@@ -1,5 +1,6 @@
 function showLoginPage() {
     //==================== show login page
+    $("#mainpage").hide();
     waiting(false);
     $("#loginpage").show();
     let html = `          
@@ -62,8 +63,7 @@ $(document).on("submit", "#login_form", function () {
                     logo: obj.brLogo == "" || obj.brLogo == "undefined" ? pic_noLogo : obj.brLogo,
                     qr: obj.brQr == "" || obj.brQr == "undefined" ? pic_noQrcode : obj.brQr,
                     line: obj.brLine
-                });
-                $("#loginpage").hide();
+                });                
                 showHome();
             } else {
                 sw_Alert(

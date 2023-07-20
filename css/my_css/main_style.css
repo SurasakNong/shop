@@ -8,7 +8,7 @@
 }
 
 :root {
-  --bg: #ffffff;
+  --bg : #ffffff;
   --logoName: #884A39;
   --bgMainMenu: #9BCDD2; 
   --btnOk: #9BCDD2;
@@ -398,7 +398,7 @@ body {
  color: #884A39;
 }
 
-/*========= เมนูย่อย =============================*/
+/*========= เมนูย่อย =============================
 #minimenu{
   color: #f0f0f0;
   background-color: rgba(30,80,150,.9);
@@ -429,7 +429,7 @@ ul>li>i{
   padding-top:12px;
   padding-left:20px;
   padding-right:15px;
-}
+}  */
 
 /*============= Edit and Add forms =============*/
 #node_edit, #node_add, #pass_change{

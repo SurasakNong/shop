@@ -1,6 +1,8 @@
 function showHome() {    
     waiting(false);
+    $("#loginpage").hide();    
     $("#mainpage").show();
+    showMainMenu();
     document.getElementById('titleName').innerHTML = branch.bname;
     document.getElementById('titleName').setAttribute('title', branch.name);
     $("#main_content").hide();
@@ -11,6 +13,45 @@ function showHome() {
     $("#user_job").html(user.job);
     document.getElementById("avatar").src = user.pic;
 
+}
+
+function showMainMenu(){
+    let html = `
+    <div class="overlay-content">
+        <div class="u_name">
+            <img id="avatar" src=""
+                alt="Avatar"> &nbsp;
+            <label id="username"></label>
+            <label id="user_job"></label>
+            <i id="ch_key" class="fa-solid fa-key fa-xs" title="เปลี่ยนรหัสผ่าน"></i>
+        </div>
+        <div style="border:1px solid #ffffff; width:85%; margin: 10px auto 10px auto;"></div>
+        <button class="my_menu"><i class="fa-solid fa-users fa-lg"></i> &nbsp;ลูกค้า</button>
+        <button class="my_menu"><i class="fa-regular fa-calendar-days fa-lg"></i> &nbsp;นัดหมาย</button>
+        <button class="my_menu" id="user_mng"><i class="fa-solid fa-user fa-lg"></i> &nbsp;พนักงาน</button>
+        <button class="my_menu"><i class="fa-solid fa-chart-pie fa-lg"></i> &nbsp;แดชบอร์ด</button>
+        <button class="my_menu"><i class="fa-solid fa-paste fa-lg"></i> &nbsp;รายงาน</button>
+        <button class="collapsible"><i class="fa-solid fa-gear fa-lg"></i> &nbsp;ตั้งค่าระบบ</button>
+        <div class="content" id="menuContent1">
+            <button class="my_menu" id="branch_mng">&nbsp;&nbsp;<i class="fa-solid fa-house fa-lg"></i>
+                &nbsp;สาขา</button>
+            <button class="my_menu" id="point_mng">&nbsp;&nbsp;<i class="fa-solid fa-location-dot fa-lg"></i>
+                &nbsp;จุดบริการ</button>
+            <button class="my_menu">&nbsp;&nbsp;<i class="fa-solid fa-tags fa-lg"></i> &nbsp;สินค้า</button>
+            <button class="my_menu">&nbsp;&nbsp;<i class="fa-solid fa-hand-holding fa-lg"></i>
+                &nbsp;บริการ</button>
+            <button class="my_menu">&nbsp;&nbsp;<i class="fa-solid fa-list-check fa-lg"></i>
+                &nbsp;คอร์ส</button>
+        </div>
+
+        <div style="border:1px solid #ffffff; width:85%; margin: 10px auto 10px auto;"></div>
+        <button class="my_exit" onclick="closeWin();">EXIT&nbsp;<i
+                class="fas fa-sign-out-alt fa-1x"></i></button>
+
+    </div>
+    ` ;
+    $("#myNav").html(html);
+    setMainMenu();
 }
 
 $(document).on("click", ".loader", function () {

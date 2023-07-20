@@ -37,6 +37,11 @@ function show_mg_branch_tb() { //========================== แสดงค้�
 
 }
 
+function clsBranchShow(){
+  $("#add_branch").html("");
+  $("#edit_branch").html("");
+  $("#table_branch").html("");
+}
 
 $(document).on('click', "#bt_search_branch", function () {  //ค้นหารายการ
     show_branch_table(rowperpage, 1);
@@ -150,7 +155,7 @@ function lst_branch_tb(ob, i_no) {  //========== ฟังก์ชั่นเ�
 }
 
 $(document).on("click", "#bt_add_branch", function () { //========== เปิดเพิ่มสาขา
-    $("#table_branch").html("");
+  clsBranchShow();
     var html = `     
     <div id="branch_add">    
       <form class="animate__animated animate__fadeIn" id="add_branch_form" style="padding:20px;">
@@ -209,8 +214,8 @@ $(document).on("click", "#bt_add_branch", function () { //========== เปิ�
 });
 
 $(document).on("click", "#cancel_add_branch", function () { //========== ยกเลิกการเพิ่มสาขา
-    $("#add_branch").html("");
-    show_branch_table(rowperpage, page_selected);
+  clsBranchShow();
+  show_branch_table(rowperpage, page_selected);
 });
 
 $(document).on("submit", "#add_branch_form", function () {  //===== ตกลงเพิ่มสาขา 
@@ -235,7 +240,7 @@ $(document).on("submit", "#add_branch_form", function () {  //===== ตกลง
         waiting(false);
         if(result == "success"){
           myAlert("success", "เพิ่มข้อมูลสาขา สำเร็จ");
-          $("#add_branch").html("");
+          clsBranchShow();
           show_branch_table(rowperpage, page_selected);
         }else if(result == "exits"){
           sw_Alert('error', 'เพิ่มข้อมูล ไม่สำเร็จ', name_br + ' ซ้ำ! มีการใช้ชื่อนี้แล้ว');
@@ -547,7 +552,7 @@ $(document).on("submit", "#edit_branch_form", function () {  //===== ตกล�
         if(result == "success"){
           waiting(false);
           myAlert("success", "แก้ไขข้อมูล สำเร็จ");
-          $("#edit_branch").html("");
+          clsBranchShow();
           show_branch_table(rowperpage, page_selected);
         }else if (result == "exits") {
             sw_Alert('warning', 'แก้ไขข้อมูล ไม่สำเร็จ', name_br + ' ซ้ำ! กรุณาเปลี่ยนใหม่');

@@ -23,7 +23,7 @@ function show_manageuser_tb() { //========================== แสดงค้�
           </div>
       </div>   
       <div class="row">  
-          <div class="col-lg-8 mx-auto" id="add_user"></div>
+          <div class="col-lg-7 col-md-9 col-sm-12 mx-auto" id="add_user"></div>
       </div>   
       <div class="row">  
           <div class="col-lg-8 mx-auto" id="edit_user"></div>
@@ -37,6 +37,12 @@ function show_manageuser_tb() { //========================== แสดงค้�
     showusertable(rowperpage, 1); //<<<<<< แสดงตาราง rowperpage,page_sel
 }
 
+function clsUseShow(){
+  $("#add_user").html("");
+  $("#edit_user").html("");
+  $("#table_user").html("");
+
+}
 
 $(document).on('click', "#bt_search_user", function () {  //ค้นหารายการ
     showusertable(rowperpage, 1);
@@ -151,7 +157,7 @@ function listuserTable(ob, i_no) {  //========== ฟังก์ชั่นเ�
 }
 
 $(document).on("click", "#bt_add_user", function () { //========== เปิดเพิ่มผู้ใช้งาน
-  $("#table_user").html("");
+  clsUseShow();
   var html = `     
     <div id="user_add">    
       <form class="animate__animated animate__fadeIn" id="add_user_form" style="padding:20px;">
@@ -229,9 +235,9 @@ $(document).on("click", "#qrcode", function () { //========== เปิดเพ
 });
 
 $(document).on("click", "#cancel_add_user", function () { //========== ยกเลิกการเพิ่มผู้ใช้งาน
-    $("#add_user").html("");
-    //document.getElementById("table_user").style.display = "block";
-    showusertable(rowperpage, page_selected);
+  clsUseShow();
+  //document.getElementById("table_user").style.display = "block";
+  showusertable(rowperpage, page_selected);
 });
 
 $(document).on("submit", "#add_user_form", function () {  //===== ตกลงเพิ่มผู้ใช้งาน  
@@ -318,7 +324,7 @@ function delete_user_Row(id) { //================================ ลบข้�
 }
 
 
-function edit_user_Row(id) { //================================ เปิดหน้าแก้ไขข้อมูลผู้ใช้งาน    
+function edit_user_Row(id) { //================================ เปิดหน้าแก้ไขข้อมูลผู้ใช้งาน      
   var html = `     
   <div id="user_edit">    
     <form class="animate__animated animate__fadeIn" id="edit_user_form" style="padding:20px;">
@@ -399,7 +405,7 @@ function edit_user_Row(id) { //================================ เปิดห�
 }
 
 $(document).on("click", "#cancel_edit_user", function () { //========== ยกเลิกการแก้ไขผู้ใช้งาน
-  $("#edit_user").html("");
+  clsUseShow();
   showusertable(rowperpage, page_selected);
 });
 
@@ -476,6 +482,7 @@ $(document).on("change", "#upload_picUser", function (e) {
               $("#url_PicUser").val(fullIdPic);
             } else {
               console.log("Upload picture user ERROR : " + res.result);
+              console.log("Upload picture user ERROR : " + res);
             }
             waiting(false);
           });
@@ -533,7 +540,7 @@ $(document).on("submit", "#edit_user_form", function () {  //===== ตกลง�
         if(result == "success"){
           waiting(false);
           myAlert("success", "แก้ไขข้อมูล สำเร็จ");
-          $("#edit_user").html("");
+          clsUseShow();
           showusertable(rowperpage, page_selected);
         }else if (result == "exits") {
             sw_Alert('warning', 'แก้ไขข้อมูล ไม่สำเร็จ', 'User Name ซ้ำกับผู้อื่น กรุณาเปลี่ยนใหม่');
